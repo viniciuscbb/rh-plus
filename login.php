@@ -51,7 +51,6 @@ if (isset($_POST['entrar'])) {
   }
 }
 
-
 ?>
 
 <!DOCTYPE html>
