@@ -31,4 +31,18 @@ function getUserLevel($login){
 	$nivel = $row['nivel'];
   return $nivel;
 }
+
+function getOffice(){
+  $userLevel = $_SESSION['userLevel'];
+
+  if($userLevel == 1){
+		return "Supervisor";
+	}else if($userLevel == 2){
+		return "Recursos Humanos";
+	}else if($userLevel == 3){
+		return "Diretor";
+	}
+  
+}
+
 ?>

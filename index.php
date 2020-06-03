@@ -1,3 +1,3 @@
 <?php
-require_once './functions/checkLogin.php';
+header("location: login.php");
 ?>

@@ -17,3 +17,27 @@ nav ol{
   display: flex;
   justify-content: center;
 }
+
+.setores p{
+  font-size: 15px;
+}
+
+.input-number{
+  width: 60px!important;
+  height: 30px!important;
+}
+
+.checkbox{
+  height: 20px;
+  width: 20px;
+}
+
+.tabela{
+  font-size: 13px;
+}
+
+.button{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}

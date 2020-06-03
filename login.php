@@ -22,12 +22,12 @@ if (isset($_POST['entrar'])) {
   $password = ($_POST['password']);
 
   if (userLogin($login, $password)) {
-    $id_subscribe = getIdUser($login);
+    $id_login = getIdUser($login);
     $userLevel = getUserLevel($login);
     
     @session_start();
-    $_SESSION['subscribe'] = true;
-    $_SESSION['id_subscribe'] = $id_subscribe;
+    $_SESSION['login'] = true;
+    $_SESSION['id_login'] = $id_login;
     $_SESSION['userLevel'] = $userLevel;
 
     /*
