@@ -26,19 +26,27 @@ function selectedSector()
   return $setor;
 }
 
+function selectRoute($id_rota)
+{
+  $conection = conection();
+  $sql = "SELECT rota FROM rotas WHERE id_rota = '$id_rota '";
+  $query = mysqli_query($conection, $sql);
+  $row = mysqli_fetch_array($query);
+  $rota = $row['rota'];
+  return $rota;
+}
+
 function showCollaborator()
 {
   $id_sector = htmlspecialchars($_GET["sector"]);
   $conection = conection();
-  $sql = "SELECT * FROM colaboradores where id_setor = '$id_sector'";
+  $sql = "SELECT * FROM colaboradores WHERE id_setor = '$id_sector' ORDER BY nome";
   $query = mysqli_query($conection, $sql);
   while ($row = mysqli_fetch_array($query)) {
     $id_colaborador = $row['id_colaborador'];
     $nome           = $row['nome'];
     $cracha         = $row['cracha'];
-    $cargo          = $row['cargo'];
-    $ramal          = $row['ramal'];
-    $rota           = $row['id_rota'];
+    $rota           = selectRoute($row['id_rota']);
     $hora           = $row['hora'];
     echo '
     <tr>
@@ -55,11 +63,12 @@ function showCollaborator()
   }
 }
 
-function getIdReserve(){
+function getIdReserve()
+{
   $id_login = $_SESSION['id_login'];
-  
+
   $conection = conection();
-  $sql = "SELECT id_reserva FROM reservas where id_supervisor = '$id_login' and data is null";
+  $sql = "SELECT id_reserva FROM reservas where id_supervisor = '$id_login' and status = 0";
   $query = mysqli_query($conection, $sql);
   $row = mysqli_fetch_array($query);
   $id_reserva = $row['id_reserva'];
@@ -88,11 +97,12 @@ function insertList($id_colaborador)
 }
 
 //Insere na tabela reserva
-function createReserve(){
+function createReserve()
+{
   $id_login = $_SESSION['id_login'];
 
   $conection = conection();
-  $sql = "INSERT INTO reservas (id_supervisor) VALUES ('$id_login')";
+  $sql = "INSERT INTO reservas (id_supervisor, valor, status) VALUES ('$id_login', 0, 0)";
   $query = mysqli_query($conection, $sql);
 
   if ($query) {
@@ -115,13 +125,13 @@ if (isset($_POST['next'])) {
   //Envia os dados separados para o banco
   foreach ($array as $values) {
     if (insertList($values)) {
-      $nextPage = $nextPage+1;
+      $nextPage = $nextPage + 1;
     }
   }
 
   if ($nextPage > 0) {
     $id_sector = htmlspecialchars($_GET["sector"]);
-    header("location: reserve.php?reserve=".getIdReserve()."&sector=".$id_sector);
+    header("location: reserve.php?reserve=" . getIdReserve() . "&sector=" . $id_sector);
   } else {
     $erro = "Erro ao prosseguir com a reserva!";
   }
@@ -143,23 +153,39 @@ if (isset($_POST['next'])) {
 </head>
 
 <body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark barra">
+    <a class="navbar-brand" href="#">RH Plus</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="index.php">Início</a>
+        <a class="nav-item nav-link" disabled href="#">Minhas Reservas</a>
+        <a class="nav-item nav-link active" href="#">Realizar Reservas <span class="sr-only">(Página atual)</span></a>
+      </div>
+    </div>
+  </nav>
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item active" aria-current="page">Bem-Vindo, <?php echo getUserName(); ?>!</li>
+      <li class="breadcrumb-item"><a href="index.php">Setores</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Colaboradores</li>
     </ol>
   </nav>
 
   <div class="setores">
     <div class="alert alert-info" role="alert">
       Setor selecionado: <b><?php echo selectedSector(); ?>.</b>
+      <hr>
+      Selecione os colaboradores desejado
     </div>
 
     <?php
-      if (!$erro == "") {
-        echo "<div class='alert alert-danger alerta-sm' role='alert'>";
-        echo $erro;
-        echo "</div>";
-      }
+    if (!$erro == "") {
+      echo "<div class='alert alert-danger alerta-sm' role='alert'>";
+      echo $erro;
+      echo "</div>";
+    }
     ?>
 
     <div id="saveSuccess" class="alert alert-success" role="alert" style="display: none;">

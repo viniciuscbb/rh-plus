@@ -1,7 +1,7 @@
 var nextBtn = document.getElementById('nextBtn');
-var btnSave = document.getElementById('save').onclick = function(){
+var salvar = '';
 
-  var salvar = '';
+var btnSave = document.getElementById('save').onclick = function(){
   for(id = 0; id<document.querySelectorAll('input.checkbox').length; id++){
     var checkbox = document.querySelectorAll('input.checkbox')[id];
     if(checkbox.checked){

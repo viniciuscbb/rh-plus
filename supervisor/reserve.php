@@ -3,17 +3,6 @@ require_once '../db/config.php';
 require_once '../functions/checkLogin.php';
 require_once '../functions/global.php';
 
-function getUserName()
-{
-  $id_login = $_SESSION['id_login'];
-  $conection = conection();
-  $sql = "SELECT nome FROM adm WHERE id_adm='$id_login'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $nome = $row['nome'];
-  return $nome;
-}
-
 function selectedSector()
 {
   $id_sector = htmlspecialchars($_GET["sector"]);
@@ -37,56 +26,63 @@ if (isset($_POST['Delete'])) {
 
 function showCollaborator()
 {
-  $id_sector = htmlspecialchars($_GET["sector"]);
   $conection = conection();
-  $sql = "SELECT C.id_colaborador, C.nome FROM reservas as R INNER JOIN lista as L ON R.id_reserva = L.id_reserva INNER JOIN colaboradores as C ON L.id_colaborador = C.id_colaborador";
+  $sql = "SELECT 
+            C.id_colaborador, C.nome, C.hora, C.id_rota, RT.valor
+          FROM 
+            reservas as R 
+          INNER JOIN 
+            lista as L ON R.id_reserva = L.id_reserva 
+          INNER JOIN 
+            colaboradores as C ON L.id_colaborador = C.id_colaborador 
+          INNER JOIN
+            rotas as RT ON C.id_rota = RT.id_rota
+          WHERE R.status = 0
+          order by 
+            nome";
+
   $query = mysqli_query($conection, $sql);
   while ($row = mysqli_fetch_array($query)) {
     $id_colaborador = $row['id_colaborador'];
     $nome           = $row['nome'];
+    $hora           = $row['hora'];
+    $rota           = $row['id_rota'];
+    $valorRota      = $row['valor'];
 
     echo '
     <tr>
-      <td>
+      <td class="botaoClass">
         <form method="post">
           <input type="hidden" name="id_colaborador" value=' . $id_colaborador . '> 
-          <button name="Delete" class="btn btn-danger btn-sm" type="submit" title="Remover o colaborador da lista"">X</button>
+          <button name="Delete" class="btn btn-danger btn-sm deleteBtn" type="submit" title="Remover o colaborador da lista"><img src="../img/delete.png" alt="Delete"></button>
         </form>
       </td>
       <td><b>' . $nome . '</b></td>
       <td>
         <div class="form-check">
-          <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox transporte" type="checkbox" checked>
+          <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox transporte" type="checkbox" checked  onchange="teste()">
+          <input value=' . $rota . ' class="rota" type="hidden">
+          <input value=' . $valorRota . ' class="valorRota" type="hidden">
         </div>
       </td>
       <td>
         <div class="form-check">
-          <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox alimentacao" type="checkbox" checked>
+          <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox alimentacao" type="checkbox" checked onchange="teste()">
         </div>
       </td>
       <td>
-        <input id="' . $id_colaborador . '" class="form-control input-number horas" type="number" value="0">
+        <input id="' . $id_colaborador . '" class="form-control input-number horas" type="number" value="0" onchange="teste()">
+        <input class="valorHora" type="hidden" value=' . $hora . '>
       </td>
     </tr>';
   }
 }
 
-function insertReserve($id_colaborador)
+function insertReserve($id_colaborador, $transporte, $alimentacao, $horas)
 {
   $conection = conection();
 
-  $sql = "SELECT * FROM colaboradores where id_colaborador = '$id_colaborador'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $id_colaborador = $row['id_colaborador'];
-  $nome           = $row['nome'];
-  $cracha         = $row['cracha'];
-  $cargo          = $row['cargo'];
-  $ramal          = $row['ramal'];
-  $rota           = $row['id_rota'];
-  $hora           = $row['hora'];
-
-  $sql = "INSERT INTO reservas (id_supervisor, id_colaborador, id_rota) VALUES (2, '$id_colaborador', $rota)";
+  $sql = "UPDATE lista SET transporte = '$transporte', alimentacao = '$alimentacao', hora = '$horas' WHERE id_colaborador = '$id_colaborador'";
   $query = mysqli_query($conection, $sql);
 
   if ($query) {
@@ -96,18 +92,29 @@ function insertReserve($id_colaborador)
   }
 }
 
-if (isset($_POST['next'])) {
-  $idSelected = ($_POST['idSelected']);
-  $array = explode('-', $idSelected);
+if (isset($_POST['createReserve'])) {
+  $total = ($_POST['total']);
+  $valorGeral = ($_POST['valorGeral']);
+  $data = ($_POST['data']);
+  $id_reserva = htmlspecialchars($_GET["reserve"]);
+  $arrayOne = explode(';', $total);
 
-  foreach ($array as $values) {
-    if (insertReserve($values)) {
-      echo "deu certo";
-    }
+  $conection = conection();
+
+  $sql = "UPDATE reservas SET valor = '$valorGeral', status = 1, data = '$data' WHERE id_reserva = '$id_reserva'";
+  $query = mysqli_query($conection, $sql);
+
+  $c = 0;
+  foreach ($arrayOne as $numero) {
+    $teste = explode("-", $arrayOne[$c]);
+    insertReserve($teste[0], $teste[1], $teste[2], $teste[3]);
+    $c++;
   }
 }
 
+//cancela a reserva
 if (isset($_POST['delete'])) {
+  $id_sector = htmlspecialchars($_GET["sector"]);
   $id_reserva = htmlspecialchars($_GET["reserve"]);
   $conection = conection();
 
@@ -119,9 +126,8 @@ if (isset($_POST['delete'])) {
   $result = mysqli_query($conection, "DELETE FROM reservas WHERE id_reserva = '$id_reserva'");
   if (!$result) {
     echo "Error";
-  }else{
-    echo '<script> alert("Reserva cancelada com sucesso!"); history.go(-2)</script>';
-
+  } else {
+    echo '<script> alert("Reserva cancelada com sucesso!"); window.location = "sector.php?sector=' . $id_sector . '"</script>';
   }
 }
 
@@ -141,28 +147,39 @@ if (isset($_POST['delete'])) {
 </head>
 
 <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark barra">
+    <a class="navbar-brand" href="#">RH Plus</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="index.php">Início</a>
+        <a class="nav-item nav-link" disabled href="#">Minhas Reservas</a>
+        <a class="nav-item nav-link active" href="#">Realizar Reservas <span class="sr-only">(Página atual)</span></a>
+      </div>
+    </div>
+  </nav>
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item active" aria-current="page">Bem-Vindo, <?php echo getUserName(); ?>!</li>
+      <li class="breadcrumb-item"><a href="index.php">Setores</a></li>
+      <li class="breadcrumb-item"><a href="sector.php?sector=<?php echo htmlspecialchars($_GET["sector"]); ?>">Colaboradores</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Confirmar</li>
     </ol>
   </nav>
 
   <div class="setores">
     <div class="alert alert-info" role="alert">
-      Setor selecionado: <b><?php echo selectedSector(); ?>.</b>
+      Informe Transporte, Alimentação e Horas Extras para cada colaborador.
     </div>
-    <div id="saveSuccess" class="alert alert-success" role="alert" style="display: none;">
-      <h4 class="alert-heading">Suas configurações foram salvas com sucesso!</h4>
-      <hr>
-      <p>Clique em Prosseguir para continuar.</p>
-    </div>
+
     <table class="table table-striped tabela">
       <thead>
         <tr>
-          <th scope="col">Opc</th>
+          <th scope="col"></th>
           <th scope="col">Nome</th>
-          <th scope="col">Transporte</th>
-          <th scope="col">Alimentação</th>
+          <th scope="col">Transp.</th>
+          <th scope="col">Aliment.</th>
           <th scope="col">H. Extras</th>
         </tr>
       </thead>
@@ -170,23 +187,83 @@ if (isset($_POST['delete'])) {
         <?php echo showCollaborator(); ?>
       </tbody>
     </table>
+    <div class="valor">
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <h3>Valor total </h3>
+          <h3><span class="badge badge-primary" id="valorTela">R$ 0,00</span></h3>
+        </li>
+      </ul>
+    </div>
     <div class="button">
-      <button id="save" type="button" class="btn btn-success">Salvar</button>
-      <button name="next" type="button" class="btn btn-primary">Criar Reserva</button>
+      <button name="createReserve" id="nextBtn" type="button" class="btn btn-primary" disabled data-toggle="modal" data-target="#modalExemplo">Criar Reserva</button>
       <form method="post">
         <button name="delete" type="submit" class="btn btn-danger">Cancelar Reserva</button>
-        <input id="totalTransporte" name="totalTransporte" type="text" style="display: none;">
-        <input id="totalAlimentacao" name="idSelected" type="text" style="display: none;">
-        <input id="totalHoras" name="totalHoras" type="text" style="display: none;">
       </form>
     </div>
   </div>
 
 
+  <!-- Modal -->
+  <div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Deseja realmente realizar a reserva?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post">
+          <div class="modal-body">
+            <div class="alert alert-info" role="alert">
+              Informe a data da reserva.
+            </div>
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <h5>
+                  Data
+                </h5>
+                <input type="date" class="form-control data" name="data" placeholder="Data" required>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <h5>
+                  Total de colaboradores
+                </h5>
+                <h4>
+                  <span class="badge badge-primary badge-pill" id="totalColaboradores">
+                    0
+                  </span>
+                </h4>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <h5>
+                  Valor total
+                </h5>
+                <h4>
+                  <span class="badge badge-primary badge-pill" id="totalValor">
+                    R$ 0,00
+                  </span>
+                </h4>
+              </li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+
+            <button name="createReserve" type="submit" class="btn btn-success">Confirmar</button>
+            <input id="total" name="total" type="hidden">
+            <input id="valorGeral" name="valorGeral" type="hidden">
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <script src="../js/jquery.min.js"></script>
   <script src="../js/popper.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
-  <script src="../js/sector.js"></script>
+  <script src="../js/reserve.js"></script>
 </body>
 
 </html>

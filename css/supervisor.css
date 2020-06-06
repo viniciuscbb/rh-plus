@@ -18,8 +18,13 @@ nav ol{
   justify-content: center;
 }
 
+.setores {
+  width: 100%;
+}
+
 .setores p{
   font-size: 15px;
+  margin: 0 10px;
 }
 
 .input-number{
@@ -40,4 +45,41 @@ nav ol{
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
+}
+
+.barra{
+  margin: -5px;
+  margin-bottom: 15px!important;
+}
+.botaoClass{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.botaoClass img{
+  height: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.botaoClass .deleteBtn{
+  height: 22px;
+  width: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.valor ul{
+  margin-bottom: 10px;
+}
+.valor ul li{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.data{
+  width: 170px;
 }
