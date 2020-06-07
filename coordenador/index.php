@@ -93,11 +93,12 @@ function getHours($id_reserva)
   return $horas;
 }
 
+//Seleciona a id_setor do coordenador logado
 function getMySector()
 {
   $id_login = $_SESSION['id_login'];
   $conection = conection();
-  $sql = "SELECT id_setor FROM setores WHERE id_responsavel = '$id_login'";
+  $sql = "SELECT id_setor FROM adm WHERE id_adm = '$id_login'";
   $query = mysqli_query($conection, $sql);
   $row = mysqli_fetch_array($query);
   $id_setor = $row['id_setor'];
@@ -324,7 +325,7 @@ if (isset($_POST['deny'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/adm.css">
-  <title>Diretor - RH Plus</title>
+  <title>Coordenador - RH Plus</title>
 </head>
 
 <body>
@@ -336,7 +337,6 @@ if (isset($_POST['deny'])) {
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link active" href="index.php">Início <span class="sr-only">(Página atual)</span></a>
-        <a class="nav-item nav-link" href="#">Indicadores</a>
       </div>
     </div>
   </nav>

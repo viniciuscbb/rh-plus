@@ -101,6 +101,24 @@ function insertReserve($id_colaborador, $transporte, $alimentacao, $horas, $id_r
   }
 }
 
+//Verifica se vai pro coordenador ou diretor
+function verifySector(){
+  $id_sector = htmlspecialchars($_GET["sector"]);
+  $conection = conection();
+  $sql = "SELECT * FROM adm WHERE id_setor='$id_sector' AND nivel = 3";
+  $query = mysqli_query($conection, $sql);
+  $row = mysqli_fetch_array($query);
+
+  $total = mysqli_num_rows($query);
+
+  if ($total > 0) {
+    return 2;
+  }else{
+    return 1;
+  }
+
+}
+
 //Clica no botao Confirmar
 if (isset($_POST['createReserve'])) {
   $total = ($_POST['total']);
@@ -113,6 +131,7 @@ if (isset($_POST['createReserve'])) {
   $arrayOne = explode(';', $total);
 
   $conection = conection();
+  $status = verifySector();
 
   $sql = "UPDATE 
             reservas 
@@ -121,7 +140,7 @@ if (isset($_POST['createReserve'])) {
             transporte = '$valorTransporte', 
             alimentacao = '$valorAlimentacao', 
             horas = '$valorHoras', 
-            status = 1, 
+            status = '$status', 
             data = '$data' 
           WHERE 
             id_reserva = '$id_reserva'";
