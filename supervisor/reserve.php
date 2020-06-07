@@ -3,6 +3,8 @@ require_once '../db/config.php';
 require_once '../functions/checkLogin.php';
 require_once '../functions/global.php';
 
+acessoRestrito(1);
+
 function selectedSector()
 {
   $id_sector = htmlspecialchars($_GET["sector"]);
@@ -38,7 +40,7 @@ function showCollaborator()
           INNER JOIN
             rotas as RT ON C.id_rota = RT.id_rota
           WHERE R.status = 0
-          order by 
+          ORDER BY
             nome";
 
   $query = mysqli_query($conection, $sql);
@@ -78,11 +80,18 @@ function showCollaborator()
   }
 }
 
-function insertReserve($id_colaborador, $transporte, $alimentacao, $horas)
+function insertReserve($id_colaborador, $transporte, $alimentacao, $horas, $id_reserva)
 {
   $conection = conection();
 
-  $sql = "UPDATE lista SET transporte = '$transporte', alimentacao = '$alimentacao', hora = '$horas' WHERE id_colaborador = '$id_colaborador'";
+  $sql = "UPDATE 
+            lista 
+          SET 
+            transporte = '$transporte', 
+            alimentacao = '$alimentacao', 
+            hora = '$horas' 
+          WHERE 
+            id_colaborador = '$id_colaborador' AND id_reserva = '$id_reserva'";
   $query = mysqli_query($conection, $sql);
 
   if ($query) {
@@ -92,22 +101,36 @@ function insertReserve($id_colaborador, $transporte, $alimentacao, $horas)
   }
 }
 
+//Clica no botao Confirmar
 if (isset($_POST['createReserve'])) {
   $total = ($_POST['total']);
   $valorGeral = ($_POST['valorGeral']);
+  $valorTransporte = ($_POST['valorTransporte']);
+  $valorAlimentacao = ($_POST['valorAlimentacao']);
+  $valorHoras = ($_POST['valorHoras']);
   $data = ($_POST['data']);
   $id_reserva = htmlspecialchars($_GET["reserve"]);
   $arrayOne = explode(';', $total);
 
   $conection = conection();
 
-  $sql = "UPDATE reservas SET valor = '$valorGeral', status = 1, data = '$data' WHERE id_reserva = '$id_reserva'";
+  $sql = "UPDATE 
+            reservas 
+          SET 
+            valor = '$valorGeral', 
+            transporte = '$valorTransporte', 
+            alimentacao = '$valorAlimentacao', 
+            horas = '$valorHoras', 
+            status = 1, 
+            data = '$data' 
+          WHERE 
+            id_reserva = '$id_reserva'";
   $query = mysqli_query($conection, $sql);
 
   $c = 0;
   foreach ($arrayOne as $numero) {
     $teste = explode("-", $arrayOne[$c]);
-    insertReserve($teste[0], $teste[1], $teste[2], $teste[3]);
+    insertReserve($teste[0], $teste[1], $teste[2], $teste[3], $id_reserva);
     $c++;
   }
 }
@@ -209,7 +232,7 @@ if (isset($_POST['delete'])) {
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Deseja realmente realizar a reserva?</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Confirme a reserva</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -249,11 +272,14 @@ if (isset($_POST['delete'])) {
             </ul>
           </div>
           <div class="modal-footer">
+            <button name="createReserve" type="submit" class="btn btn-success">Confirmar</button>
             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
 
-            <button name="createReserve" type="submit" class="btn btn-success">Confirmar</button>
             <input id="total" name="total" type="hidden">
             <input id="valorGeral" name="valorGeral" type="hidden">
+            <input id="valorTransporte" name="valorTransporte" type="hidden">
+            <input id="valorAlimentacao" name="valorAlimentacao" type="hidden">
+            <input id="valorHoras" name="valorHoras" type="hidden">
 
           </div>
         </form>

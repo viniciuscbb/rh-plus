@@ -3,6 +3,8 @@ require_once '../db/config.php';
 require_once '../functions/checkLogin.php';
 require_once '../functions/global.php';
 
+acessoRestrito(1);
+
 function getUserName()
 {
   $id_login = $_SESSION['id_login'];

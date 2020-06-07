@@ -4,6 +4,8 @@ require_once '../functions/checkLogin.php';
 require_once '../functions/global.php';
 $erro = "";
 
+acessoRestrito(1);
+
 function getUserName()
 {
   $id_login = $_SESSION['id_login'];
@@ -100,9 +102,10 @@ function insertList($id_colaborador)
 function createReserve()
 {
   $id_login = $_SESSION['id_login'];
+  $id_sector = htmlspecialchars($_GET["sector"]);
 
   $conection = conection();
-  $sql = "INSERT INTO reservas (id_supervisor, valor, status) VALUES ('$id_login', 0, 0)";
+  $sql = "INSERT INTO reservas (id_supervisor, id_setor, valor, status) VALUES ('$id_login', '$id_sector', 0, 0)";
   $query = mysqli_query($conection, $sql);
 
   if ($query) {

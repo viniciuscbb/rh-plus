@@ -3,7 +3,7 @@ require_once '../db/config.php';
 require_once '../functions/checkLogin.php';
 require_once '../functions/global.php';
 
-acessoRestrito(4);
+acessoRestrito(3);
 
 $mensagem = '<div class="alert alert-info" role="alert">
               <h6>Abaixo estão as reservas pendentes.</h6>
@@ -93,10 +93,30 @@ function getHours($id_reserva)
   return $horas;
 }
 
+function getMySector()
+{
+  $id_login = $_SESSION['id_login'];
+  $conection = conection();
+  $sql = "SELECT id_setor FROM setores WHERE id_responsavel = '$id_login'";
+  $query = mysqli_query($conection, $sql);
+  $row = mysqli_fetch_array($query);
+  $id_setor = $row['id_setor'];
+  return $id_setor;
+}
+
+/*Status reserva
+1 = Pendente para Diretor
+2 = Pendente para Coordenador
+3 = Aprovado
+4 = Refazer
+5 = Negado
+*/
+
 function showReservers()
 {
+  $id_setor = getMySector();
   $conection = conection();
-  $sql = "SELECT * FROM reservas WHERE status = 1";
+  $sql = "SELECT * FROM reservas WHERE status = 2 AND id_setor = '$id_setor'";
   $query = mysqli_query($conection, $sql);
   $total = mysqli_num_rows($query);
 
@@ -257,7 +277,7 @@ if (isset($_POST['accept'])) {
   $sql = "UPDATE 
             reservas 
           SET 
-            status = 3
+            status = 1
           WHERE 
             id_reserva = '$id_reserva'";
   $query = mysqli_query($conection, $sql);

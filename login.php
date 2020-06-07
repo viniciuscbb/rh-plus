@@ -33,13 +33,16 @@ if (isset($_POST['entrar'])) {
     /*
     Nivel 1 = Supervisor
     Nivel 2 = RH
-    Nivel 3 = Diretor
+    Nivel 3 = Coordenador
+    Nivel 4 = Diretor
     */
     if ($userLevel == 1) {
       header("location: supervisor/index.php");
     } else if ($userLevel == 2) {
       header("location: rh/index.php");
     } else if ($userLevel == 3) {
+      header("location: coordenador/index.php");
+    } else if ($userLevel == 4) {
       header("location: adm/index.php");
     } else {
       $mensagem = "";

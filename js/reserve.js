@@ -93,6 +93,9 @@ function teste() {
   //mostra os valores na tela
   var t = document.getElementById('total').value = salvar;
   var inputValorGeral = document.getElementById('valorGeral').value = valorGeral;
+  var inputValorTransporte = document.getElementById('valorTransporte').value = valorTotalRotas;
+  var inputValorAlimentacao = document.getElementById('valorAlimentacao').value = valorTotalAlimentacao;
+  var inputValorHoras = document.getElementById('valorHoras').value = valorTotalHoras;
   var totalColaboradores = document.getElementById('totalColaboradores').innerHTML = transporte.length;
   var valorTela = document.getElementById('valorTela').innerHTML = valorGeral.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
   var totalValor = document.getElementById('totalValor').innerHTML = valorGeral.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });

@@ -8,7 +8,7 @@ function acessoRestrito($userLevel)
 	if (!isset($_SESSION['login']) && !isset($_SESSION['userLevel'])) {
 		header('Location: ../login.php');
 	} else {
-		if ($_SESSION['nivelAcesso'] != $userLevel) {
+		if ($_SESSION['userLevel'] != $userLevel) {
 			header("Location: ../login.php?login=" . $_SESSION['userLevel'] . "");
 		}
 	}
@@ -35,11 +35,20 @@ function getUserLevel($login){
 function getOffice(){
   $userLevel = $_SESSION['userLevel'];
 
+    /*
+    Nivel 1 = Supervisor
+    Nivel 2 = RH
+    Nivel 3 = Coordenador
+    Nivel 4 = Diretor
+		*/
+		
   if($userLevel == 1){
 		return "Supervisor";
 	}else if($userLevel == 2){
 		return "Recursos Humanos";
 	}else if($userLevel == 3){
+		return "Coordenador";
+	}else if($userLevel == 4){
 		return "Diretor";
 	}
   
