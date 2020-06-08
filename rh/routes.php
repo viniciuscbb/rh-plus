@@ -48,7 +48,7 @@ function getCount($id_reserva)
 function getFood($id_reserva)
 {
   $conection = conection();
-  $sql = "SELECT count(alimentacao) as a FROM lista WHERE id_reserva = '$id_reserva'";
+  $sql = "SELECT count(alimentacao) as a FROM lista WHERE id_reserva = '$id_reserva' AND alimentacao = 1";
   $query = mysqli_query($conection, $sql);
   $row = mysqli_fetch_array($query);
   $alimentacao = $row['a'];
@@ -123,7 +123,7 @@ function selectedSector()
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/adm.css">
-  <title>Coordenador - RH Plus</title>
+  <title>Recursos Humanos - RH Plus</title>
 </head>
 
 <body>

@@ -226,6 +226,7 @@ function showReservers()
             <div class="botoes">
               <input name="idReserva" type="hidden" value=' . $id_reserva . '>
               <button type="submit" name="accept" class="btn btn-success">Aceitar</button>
+              <button type="submit" name="remake" class="btn btn-warning">Refazer</button>
               <button type="submit" name="deny" class="btn btn-danger">Cancelar</button>
             </div>
           </form>
@@ -289,6 +290,27 @@ if (isset($_POST['deny'])) {
   } else {
     $mensagem = '<div class="alert alert-danger" role="alert">
                   <h6>Erro ao negar reserva do setor ' . getReserve($id_reserva) . '!</h6>
+                 </div>';
+  }
+}
+
+if (isset($_POST['remake'])) {
+  $id_reserva = ($_POST['idReserva']);
+  $conection = conection();
+  $sql = "UPDATE 
+            reservas 
+          SET 
+            status = 4
+          WHERE 
+            id_reserva = '$id_reserva'";
+  $query = mysqli_query($conection, $sql);
+  if ($query) {
+    $mensagem = '<div class="alert alert-success" role="alert">
+                  <h6>Pedido de reanálise do setor ' . getReserve($id_reserva) . ' enviada com sucesso!</h6>
+                 </div>';
+  } else {
+    $mensagem = '<div class="alert alert-danger" role="alert">
+                  <h6>Erro ao enviar pedido de reanálise do setor ' . getReserve($id_reserva) . '!</h6>
                  </div>';
   }
 }

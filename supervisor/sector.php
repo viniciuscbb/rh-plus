@@ -164,7 +164,7 @@ if (isset($_POST['next'])) {
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="index.php">Início</a>
-        <a class="nav-item nav-link" disabled href="#">Minhas Reservas</a>
+        <a class="nav-item nav-link" disabled href="myreserve.php">Minhas Reservas</a>
         <a class="nav-item nav-link active" href="#">Realizar Reservas <span class="sr-only">(Página atual)</span></a>
       </div>
     </div>

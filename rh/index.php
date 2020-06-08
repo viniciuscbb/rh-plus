@@ -19,7 +19,6 @@ function getUserName()
   return $nome[0];
 }
 
-
 function getSector($id_setor)
 {
   $conection = conection();
@@ -29,7 +28,6 @@ function getSector($id_setor)
   $setor = $row['setor'];
   return $setor;
 }
-
 
 function getCount($id_reserva)
 {
@@ -44,7 +42,7 @@ function getCount($id_reserva)
 function getFood($id_reserva)
 {
   $conection = conection();
-  $sql = "SELECT count(alimentacao) as a FROM lista WHERE id_reserva = '$id_reserva'";
+  $sql = "SELECT count(alimentacao) as a FROM lista WHERE id_reserva = '$id_reserva' AND alimentacao = 1";
   $query = mysqli_query($conection, $sql);
   $row = mysqli_fetch_array($query);
   $alimentacao = $row['a'];
@@ -75,7 +73,7 @@ function showReservers()
 
       $data =  $row['data'];
 
-      $today = date("d-m-Y");
+      $today = date("Y-m-d");
       if (strtotime($data) >= strtotime($today)) {
         $data =  date("d/m/Y", strtotime($data));
 
@@ -110,7 +108,7 @@ function showReservers()
                       Data
                     </h5>
                     <h5>
-                      <span class="badge badge-primary badge-pill" id="totalValor">
+                      <span class="badge badge-primary badge-pill">
                         ' . $data . '
                       </span>
                     </h5>
@@ -155,7 +153,7 @@ function showReservers()
       }
     }
   } else {
-    echo '<div class="alert alert-warning" role="alert">
+    return '<div class="alert alert-warning" role="alert">
             <h6>Nenhuma reserva disponível.</h6>
           </div>';
   }
@@ -172,7 +170,7 @@ function showReservers()
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/adm.css">
-  <title>Coordenador - RH Plus</title>
+  <title>Recursos Humanos - RH Plus</title>
 </head>
 
 <body>

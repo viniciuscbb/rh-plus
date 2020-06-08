@@ -152,6 +152,9 @@ if (isset($_POST['createReserve'])) {
     insertReserve($teste[0], $teste[1], $teste[2], $teste[3], $id_reserva);
     $c++;
   }
+  if ($query) {
+    header("location: myreserve.php");
+  }
 }
 
 //cancela a reserva
@@ -197,7 +200,7 @@ if (isset($_POST['delete'])) {
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="index.php">Início</a>
-        <a class="nav-item nav-link" disabled href="#">Minhas Reservas</a>
+        <a class="nav-item nav-link" disabled href="myreserve.php">Minhas Reservas</a>
         <a class="nav-item nav-link active" href="#">Realizar Reservas <span class="sr-only">(Página atual)</span></a>
       </div>
     </div>

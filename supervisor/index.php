@@ -58,7 +58,7 @@ function showSector()
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link active" href="index.php">Início <span class="sr-only">(Página atual)</span></a>
-        <a class="nav-item nav-link" disabled href="#">Minhas Reservas</a>
+        <a class="nav-item nav-link" disabled href="myreserve.php">Minhas Reservas</a>
         <a class="nav-item nav-link" href="#">Realizar Reservas</a>
       </div>
     </div>

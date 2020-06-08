@@ -9,21 +9,6 @@ $mensagem = '<div class="alert alert-info" role="alert">
               <h6>Abaixo estão as reservas pendentes.</h6>
             </div>';
 
-function getUserName()
-{
-  $id_login = $_SESSION['id_login'];
-  $conection = conection();
-  $sql = "SELECT nome FROM adm WHERE id_adm='$id_login'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $nome = $row['nome'];
-
-  $nome = explode(" ", $nome);
-
-  return $nome[0];
-}
-
-
 function getSector($id_setor)
 {
   $conection = conection();
@@ -32,27 +17,6 @@ function getSector($id_setor)
   $row = mysqli_fetch_array($query);
   $setor = $row['setor'];
   return $setor;
-}
-
-
-function getCount($id_reserva)
-{
-  $conection = conection();
-  $sql = "SELECT count(id_colaborador) as conta FROM lista WHERE id_reserva = '$id_reserva'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $conta = $row['conta'];
-  return $conta;
-}
-
-function getFood($id_reserva)
-{
-  $conection = conection();
-  $sql = "SELECT count(alimentacao) as a FROM lista WHERE id_reserva = '$id_reserva'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $alimentacao = $row['a'];
-  return $alimentacao;
 }
 
 /*Status reserva
@@ -78,7 +42,7 @@ function showRoutes()
   $id_reserva = htmlspecialchars($_GET["hours"]);
   $conection = conection();
   $sql = "SELECT 
-            C.nome as nome, L.hora as hora
+            C.cracha as cracha, C.nome as nome, L.hora as hora
           FROM 
             lista as L
           INNER JOIN 
@@ -91,11 +55,13 @@ function showRoutes()
 
   $query = mysqli_query($conection, $sql);
   while ($row = mysqli_fetch_array($query)) {
+    $cracha  = $row['cracha'];
     $nome  = $row['nome'];
     $hora  = $row['hora'];
 
     echo '
     <tr>
+      <td>' . $cracha . '</td>
       <td><b>' . $nome . '</b></td>
       <td>
         <h5>
@@ -131,7 +97,7 @@ function selectedSector()
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <link rel="stylesheet" href="../css/adm.css">
-  <title>Coordenador - RH Plus</title>
+  <title>Recursos Humanos - RH Plus</title>
 </head>
 
 <body>
@@ -149,7 +115,7 @@ function selectedSector()
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="index.php">Reservas</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Rotas</li>
+      <li class="breadcrumb-item active" aria-current="page">Horas Extras</li>
     </ol>
   </nav>
   <div class="setores">
@@ -162,6 +128,7 @@ function selectedSector()
     <table class="table table-striped tabela">
       <thead>
         <tr>
+          <th scope="col">Chapa</th>
           <th scope="col">Nome</th>
           <th scope="col">Horas</th>
         </tr>
