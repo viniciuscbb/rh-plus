@@ -71,6 +71,22 @@ nav ol{
   align-items: center;
 }
 
+.deleteBtn2{
+  height: 22px;
+  width: 50px;
+  font-size: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.dois{
+  display: flex;
+  align-items: center;
+}
+
 .valor ul{
   margin-bottom: 10px;
 }
@@ -82,4 +98,8 @@ nav ol{
 
 .data{
   width: 170px;
+}
+
+.area{
+  width: 100%!important;
 }

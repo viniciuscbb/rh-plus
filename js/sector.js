@@ -16,4 +16,9 @@ var btnSave = document.getElementById('save').onclick = function(){
 }
 
 
-
+function change(idReserva, idSetor, motive){
+  const btnRenew = document.getElementById('renewReserve');
+  const inputRenew = document.getElementById('inputRenew');
+  btnRenew.href = `reserve.php?reserve=${idReserva}&sector=${idSetor}`;
+  inputRenew.innerText = motive;  
+}

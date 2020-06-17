@@ -48,7 +48,7 @@ function teste() {
       valorTotalHoras = valorTotalHoras + valorHoraInput.value * result;
     }
 
-    if (HorasInput.value == '') {
+    if (HorasInput.value == '' || HorasInput.value < 0 ) {
       HorasInput.value = 0;
       alert('Os campos Horas Extras devem ser preenchidos!\nCaso não haja hora extra, preencha com 0.')
     }

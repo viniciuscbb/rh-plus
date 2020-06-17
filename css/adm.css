@@ -89,3 +89,8 @@ nav ol{
   justify-content: space-evenly;
   margin-top: 10px;
 }
+
+
+.area{
+  width: 100%!important;
+}

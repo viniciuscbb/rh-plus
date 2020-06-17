@@ -16,7 +16,6 @@ function getSector($id_setor)
   return $setor;
 }
 
-
 function showMyReserve()
 {
   $id_login = $_SESSION['id_login'];
@@ -30,6 +29,9 @@ function showMyReserve()
     $setor      = getSector($row['id_setor']);
     $data       = $row['data'];
     $status     = $row['status'];
+    $refazer     = $row['refazer'];
+    $cancelar = '';
+    $id_setor = $row['id_setor'];
 
     /*Status reserva
     1 = Pendente para Diretor
@@ -41,19 +43,29 @@ function showMyReserve()
 
     switch ($status) {
       case 1:
-        $status = '<span class="badge badge-primary badge-pill">Em análise</span>';
+        $status = '<form method="post" class="dois">
+                    <span class="badge badge-primary badge-pill">Em análise</span>
+                    <input type="hidden" name="idReserva" value=' . $id_reserva . '> 
+                      <button name="Cancel" onclick="trocar(' . $id_reserva . $id_setor . ')" class="btn btn-danger btn-sm deleteBtn2" type="submit" title="Cancelar esta reserva">Cancelar</button>
+                   </form>';
         break;
       case 2:
-        $status = '<span class="badge badge-primary badge-pill">Em análise</span>';
+        $status = '<form method="post" class="dois">
+                    <span class="badge badge-primary badge-pill">Em análise</span>
+                      <input type="hidden" name="idReserva" value=' . $id_reserva . '> 
+                      <button name="Cancel" class="btn btn-danger btn-sm deleteBtn2" type="submit" title="Cancelar esta reserva">Cancelar</button>
+                   </form>';
+
         break;
       case 3:
         $status = '<span class="badge badge-success badge-pill">Aprovado</span>';
         break;
       case 4:
-        $status = '<a href="reserve.php?reserve='.$id_reserva.'&sector='.$row['id_setor'].'" class="badge badge-warning">Reanálise<p>Clique para refazer</p></a>';
+        $status = '<button value="' . $refazer . '" onclick="change(' . $id_reserva . ', ' . $id_setor . ', this.value)" class="btn btn-warning btn-sm" type="button" data-toggle="modal" data-target="#modalExemplo">Reanálise</button>
+                  ';
         break;
       case 5:
-        $status = '<span class="badge badge-danger badge-pill">Negado</span>';
+        $status = '<span class="badge badge-danger badge-pill">Cancelado</span>';
         break;
       default:
         $status = '<span class="badge badge-danger badge-pill">Erro</span>';
@@ -67,22 +79,40 @@ function showMyReserve()
       <tr>
         <th>
           ' . $id_reserva . '
+          <input type="hidden" id="idReserva" value=' . $id_reserva . '> 
         </th>
         <td><b>' . $setor . '</b></td>
         
         <td>
-          <h5>
+          <h6>
             <span class="badge badge-primary badge-pill">
               ' . $data . '
             </span>
-          </h5>
+          </h6>
         </td>
-        <td><h5>' . $status . '</h5></td>
+        <td><h6>' . $status . '</h6></td>
+        
         
       </tr>';
     }
-    
-    
+  }
+  //cancela a reserva
+  if (isset($_POST['Cancel'])) {
+    $id_reserva = ($_POST['idReserva']);
+    $conection = conection();
+    $sql = "UPDATE 
+            reservas 
+          SET 
+            status = 5
+          WHERE 
+            id_reserva = '$id_reserva'";
+
+    $result = mysqli_query($conection, $sql);
+    if (!$result) {
+      echo "Error";
+    } else {
+      header("Refresh:0");
+    }
   }
 }
 
@@ -141,7 +171,36 @@ function showMyReserve()
     </table>
   </div>
 
-
+  <!-- Modal -->
+  <div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Confirme a reanálise</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-warning" role="alert">
+            Abaixo está o motivo da reanálise.
+          </div>
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div class="form-group area">
+                <h5>Motivo</h5>
+                <textarea id="inputRenew" class="form-control" name="motive" rows="3" minlength="10" maxlength="200" disabled></textarea>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+          <a href="#" id="renewReserve" type="button" class="btn btn-success">Refazer</a>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <script src="../js/jquery.min.js"></script>
   <script src="../js/popper.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>

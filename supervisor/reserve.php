@@ -30,7 +30,7 @@ function showCollaborator()
 {
   $conection = conection();
   $sql = "SELECT 
-            C.id_colaborador, C.nome, C.hora, C.id_rota, RT.valor
+            C.id_colaborador, C.nome, RT.rota, C.hora, C.id_rota, RT.valor
           FROM 
             reservas as R 
           INNER JOIN 
@@ -39,7 +39,7 @@ function showCollaborator()
             colaboradores as C ON L.id_colaborador = C.id_colaborador 
           INNER JOIN
             rotas as RT ON C.id_rota = RT.id_rota
-          WHERE R.status = 0
+          WHERE R.status = 0 OR R.status = 4
           ORDER BY
             nome";
 
@@ -47,12 +47,13 @@ function showCollaborator()
   while ($row = mysqli_fetch_array($query)) {
     $id_colaborador = $row['id_colaborador'];
     $nome           = $row['nome'];
+    $rotaC           = $row['rota'];
     $hora           = $row['hora'];
     $rota           = $row['id_rota'];
     $valorRota      = $row['valor'];
 
     echo '
-    <tr>
+    <tr style="font-size: 12px">
       <td class="botaoClass">
         <form method="post">
           <input type="hidden" name="id_colaborador" value=' . $id_colaborador . '> 
@@ -60,6 +61,7 @@ function showCollaborator()
         </form>
       </td>
       <td><b>' . $nome . '</b></td>
+      <td>' . $rotaC . '</td>
       <td>
         <div class="form-check">
           <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox transporte" type="checkbox" checked  onchange="teste()">
@@ -69,7 +71,7 @@ function showCollaborator()
       </td>
       <td>
         <div class="form-check">
-          <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox alimentacao" type="checkbox" checked onchange="teste()">
+          <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox alimentacao" type="checkbox" onchange="teste()">
         </div>
       </td>
       <td>
@@ -102,7 +104,8 @@ function insertReserve($id_colaborador, $transporte, $alimentacao, $horas, $id_r
 }
 
 //Verifica se vai pro coordenador ou diretor
-function verifySector(){
+function verifySector()
+{
   $id_sector = htmlspecialchars($_GET["sector"]);
   $conection = conection();
   $sql = "SELECT * FROM adm WHERE id_setor='$id_sector' AND nivel = 3";
@@ -113,10 +116,9 @@ function verifySector(){
 
   if ($total > 0) {
     return 2;
-  }else{
+  } else {
     return 1;
   }
-
 }
 
 //Clica no botao Confirmar
@@ -127,6 +129,7 @@ if (isset($_POST['createReserve'])) {
   $valorAlimentacao = ($_POST['valorAlimentacao']);
   $valorHoras = ($_POST['valorHoras']);
   $data = ($_POST['data']);
+  $motive = ($_POST['motive']);
   $id_reserva = htmlspecialchars($_GET["reserve"]);
   $arrayOne = explode(';', $total);
 
@@ -141,7 +144,9 @@ if (isset($_POST['createReserve'])) {
             alimentacao = '$valorAlimentacao', 
             horas = '$valorHoras', 
             status = '$status', 
-            data = '$data' 
+            data = '$data',
+            motivo = '$motive',
+            refazer = null
           WHERE 
             id_reserva = '$id_reserva'";
   $query = mysqli_query($conection, $sql);
@@ -223,6 +228,7 @@ if (isset($_POST['delete'])) {
         <tr>
           <th scope="col"></th>
           <th scope="col">Nome</th>
+          <th scope="col">Rota</th>
           <th scope="col">Transp.</th>
           <th scope="col">Aliment.</th>
           <th scope="col">H. Extras</th>
@@ -290,6 +296,12 @@ if (isset($_POST['delete'])) {
                     R$ 0,00
                   </span>
                 </h4>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="form-group area">
+                  <h5>Motivo</h5>
+                  <textarea class="form-control" name="motive" rows="3" minlength="10" maxlength="200" placeholder="Descreva o motivo desta reserva" required></textarea>
+                </div>
               </li>
             </ul>
           </div>
