@@ -113,11 +113,29 @@ function getMySector()
 5 = Negado
 */
 
+function getMotive($id_reserva)
+{
+  $conection = conection();
+  $sql = "SELECT motivo FROM reservas WHERE id_reserva = '$id_reserva'";
+  $query = mysqli_query($conection, $sql);
+  $row = mysqli_fetch_array($query);
+  $motivo = $row['motivo'];
+  return $motivo;
+}
+
+function setTurno($turno){
+  if($turno == 0){
+    return 'Matutino';
+  }else{
+    return 'Noturno';
+  }
+}
+
+
 function showReservers()
 {
-  $id_setor = getMySector();
   $conection = conection();
-  $sql = "SELECT * FROM reservas WHERE status = 2 AND id_setor = '$id_setor'";
+  $sql = "SELECT * FROM reservas WHERE status = 2";
   $query = mysqli_query($conection, $sql);
   $total = mysqli_num_rows($query);
 
@@ -130,6 +148,7 @@ function showReservers()
       date_default_timezone_set('America/Sao_Paulo');
 
       $data =  $row['data'];
+      $turno =  setTurno($row['turno']);
       $data =  date("d/m/Y", strtotime($data));
       $valor = $row['valor'];
       $valor = str_replace(',', '.', $valor);
@@ -148,6 +167,8 @@ function showReservers()
       $totalHoras = number_format($totalHoras, 2, ',', '.');
 
       $totalColaborador = getCount($id_reserva);
+
+      $motivo = getMotive($id_reserva);
 
       $colapso = 'true';
       $colapsed = '';
@@ -189,6 +210,16 @@ function showReservers()
               <h5>
                 <span class="badge badge-primary badge-pill" id="totalValor">
                   ' . $data . '
+                </span>
+              </h5>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <h5>
+                Turno
+              </h5>
+              <h5>
+                <span class="badge badge-primary badge-pill" id="totalValor">
+                  ' . $turno . '
                 </span>
               </h5>
             </li>
@@ -242,11 +273,20 @@ function showReservers()
                 </span>
               </h5>
             </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <div class="form-group">
+                <h5>Motivo</h5>
+                <div class="alert alert-dark" role="alert">
+                  <p class="text-justify">' . $motivo . '</p>
+                </div>
+              </div>
+            </li>
           </ul>
           <form method="post">
             <div class="botoes">
               <input name="idReserva" type="hidden" value=' . $id_reserva . '>
               <button type="submit" name="accept" class="btn btn-success">Aceitar</button>
+              <button type="button" onclick="change(' . $id_reserva . ')" id="btnRemake" data-toggle="modal" data-target="#modalExemplo" class="btn btn-warning">Refazer</button>
               <button type="submit" name="deny" class="btn btn-danger">Cancelar</button>
             </div>
           </form>
@@ -262,6 +302,7 @@ function showReservers()
     </div>';
   }
 }
+
 
 /*Status reserva
 1 = Pendente para Diretor
@@ -314,6 +355,28 @@ if (isset($_POST['deny'])) {
   }
 }
 
+if (isset($_POST['remake'])) {
+  $id_reserva = ($_POST['inputIdReserva']);
+  $refazer = ($_POST['inputRemake']);
+  $conection = conection();
+  $sql = "UPDATE 
+            reservas 
+          SET 
+            status = 4, refazer = '$refazer'
+          WHERE 
+            id_reserva = '$id_reserva'";
+  $query = mysqli_query($conection, $sql);
+  if ($query) {
+    $mensagem = '<div class="alert alert-success" role="alert">
+                  <h6>Pedido de reanálise do setor ' . getReserve($id_reserva) . ' enviada com sucesso!</h6>
+                 </div>';
+  } else {
+    $mensagem = '<div class="alert alert-danger" role="alert">
+                  <h6>Erro ao enviar pedido de reanálise do setor ' . getReserve($id_reserva) . '!</h6>
+                 </div>';
+  }
+}
+
 ?>
 
 
@@ -362,9 +425,39 @@ if (isset($_POST['deny'])) {
   </div>
 
 
+  <!-- Modal -->
+  <div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form method="post">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Confirme a reanálise</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-info" role="alert">
+              Digite abaixo o motivo da reanálise.
+            </div>
+            <div class="form-group area">
+              <h5>Motivo</h5>
+              <textarea class="form-control" name="inputRemake" rows="3" minlength="10" maxlength="200" placeholder="Descreva o motivo da reanálise" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <input name="inputIdReserva" id="inputIdReserva" type="hidden">
+            <button name="remake" type="submit" class="btn btn-success">Refazer</a>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
   <script src="../js/jquery.min.js"></script>
   <script src="../js/popper.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/adm.js"></script>
 </body>
 
 </html>

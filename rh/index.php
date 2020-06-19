@@ -49,6 +49,15 @@ function getFood($id_reserva)
   return $alimentacao;
 }
 
+function setTurno($turno){
+  if($turno == 0){
+    return 'Matutino';
+  }else{
+    return 'Noturno';
+  }
+}
+
+
 /*Status reserva
 1 = Pendente para Diretor
 2 = Pendente para Coordenador
@@ -72,7 +81,7 @@ function showReservers()
       date_default_timezone_set('America/Sao_Paulo');
 
       $data =  $row['data'];
-
+      $turno =  setTurno($row['turno']);
       $today = date("Y-m-d");
       if (strtotime($data) >= strtotime($today)) {
         $data =  date("d/m/Y", strtotime($data));
@@ -110,6 +119,16 @@ function showReservers()
                     <h5>
                       <span class="badge badge-primary badge-pill">
                         ' . $data . '
+                      </span>
+                    </h5>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <h5>
+                      Turno
+                    </h5>
+                    <h5>
+                      <span class="badge badge-primary badge-pill" id="totalValor">
+                        ' . $turno . '
                       </span>
                     </h5>
                   </li>

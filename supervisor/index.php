@@ -19,6 +19,14 @@ function getUserName()
   return $nome[0];
 }
 
+function intervaloEntreDatas($inicio, $fim, $agora)
+{
+  $inicioTimestamp = strtotime($inicio);
+  $fimTimestamp = strtotime($fim);
+  $agoraTimestamp = strtotime($agora);
+  return (($agoraTimestamp >= $inicioTimestamp) && ($agoraTimestamp <= $fimTimestamp));
+}
+
 function showSector()
 {
   $conection = conection();
@@ -26,12 +34,26 @@ function showSector()
   $sql = "SELECT * FROM setores where id_responsavel = '$id_login'";
   $query = mysqli_query($conection, $sql);
 
-  while ($row = mysqli_fetch_array($query)) {
-    $id_setor = $row['id_setor'];
-    $setor    = $row['setor'];
-    echo '<a href="sector.php?sector=' . $id_setor . '" class="list-group-item list-group-item-action">
-            ' . $setor . '
-          </a>';
+  //Define o horario inicio e fim para realizar uma reserva
+  date_default_timezone_set('America/Sao_Paulo');
+  $inicio = '06:00:00';
+  $fim    = '18:30:00';
+  $agora  = date("H:i:s");
+
+  if (intervaloEntreDatas($inicio, $fim, $agora)) {
+    while ($row = mysqli_fetch_array($query)) {
+      $id_setor = $row['id_setor'];
+      $setor    = $row['setor'];
+      echo '<a href="sector.php?sector=' . $id_setor . '" class="list-group-item list-group-item-action">
+              ' . $setor . '
+            </a>';
+    }
+  } else {
+    return '<div class="alert alert-danger" role="alert">
+              <h6>Novas reservas indisponíveis</h6>
+              <hr>
+              Novas reservas somente <b>das 6h até às 14:59h.</b>
+            </div>';
   }
 }
 
@@ -76,7 +98,7 @@ function showSector()
       Nível: <b><?php echo getOffice(); ?></b>
     </div>
     <div class="list-group">
-      <a class="list-group-item list-group-item-action active">
+      <a href="#" class="list-group-item list-group-item-action active">
         Escolha o setor responsável abaixo.
       </a>
       <?php echo showSector(); ?>

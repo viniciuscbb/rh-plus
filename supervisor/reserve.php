@@ -129,6 +129,7 @@ if (isset($_POST['createReserve'])) {
   $valorAlimentacao = ($_POST['valorAlimentacao']);
   $valorHoras = ($_POST['valorHoras']);
   $data = ($_POST['data']);
+  $turno = ($_POST['turno']);
   $motive = ($_POST['motive']);
   $id_reserva = htmlspecialchars($_GET["reserve"]);
   $arrayOne = explode(';', $total);
@@ -144,6 +145,7 @@ if (isset($_POST['createReserve'])) {
             alimentacao = '$valorAlimentacao', 
             horas = '$valorHoras', 
             status = '$status', 
+            turno = '$turno', 
             data = '$data',
             motivo = '$motive',
             refazer = null
@@ -268,7 +270,7 @@ if (isset($_POST['delete'])) {
         <form method="post">
           <div class="modal-body">
             <div class="alert alert-info" role="alert">
-              Informe a data da reserva.
+              Informe data, turno e motivo da reserva.
             </div>
             <ul class="list-group">
               <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -276,6 +278,17 @@ if (isset($_POST['delete'])) {
                   Data
                 </h5>
                 <input type="date" class="form-control data" name="data" placeholder="Data" required>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="form-group area">
+                  <h5>
+                    Turno
+                  </h5>
+                  <select class="form-control" name="turno" required>
+                    <option value="0">Matutino</option>
+                    <option value="1">Noturno</option>
+                  </select>
+                </div>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <h5>

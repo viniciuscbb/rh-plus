@@ -103,6 +103,14 @@ function getMotive($id_reserva)
   return $motivo;
 }
 
+function setTurno($turno){
+  if($turno == 0){
+    return 'Matutino';
+  }else{
+    return 'Noturno';
+  }
+}
+
 function showReservers()
 {
   $conection = conection();
@@ -119,6 +127,7 @@ function showReservers()
       date_default_timezone_set('America/Sao_Paulo');
 
       $data =  $row['data'];
+      $turno =  setTurno($row['turno']);
       $data =  date("d/m/Y", strtotime($data));
       $valor = $row['valor'];
       $valor = str_replace(',', '.', $valor);
@@ -185,6 +194,16 @@ function showReservers()
             </li>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <h5>
+                Turno
+              </h5>
+              <h5>
+                <span class="badge badge-primary badge-pill" id="totalValor">
+                  ' . $turno . '
+                </span>
+              </h5>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <h5>
                 Colaboradores
               </h5>
               <h5>
@@ -236,7 +255,9 @@ function showReservers()
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <div class="form-group">
                 <h5>Motivo</h5>
-                <p class="text-justify">' . $motivo . '</p>
+                <div class="alert alert-dark" role="alert">
+                  <p class="text-justify">' . $motivo . '</p>
+                </div>
               </div>
             </li>
           </ul>
@@ -244,7 +265,7 @@ function showReservers()
             <div class="botoes">
               <input name="idReserva" type="hidden" value=' . $id_reserva . '>
               <button type="submit" name="accept" class="btn btn-success">Aceitar</button>
-              <button type="button" onclick="change('.$id_reserva.')" id="btnRemake" data-toggle="modal" data-target="#modalExemplo" class="btn btn-warning">Refazer</button>
+              <button type="button" onclick="change(' . $id_reserva . ')" id="btnRemake" data-toggle="modal" data-target="#modalExemplo" class="btn btn-warning">Refazer</button>
               <button type="submit" name="deny" class="btn btn-danger">Cancelar</button>
             </div>
           </form>
@@ -397,18 +418,14 @@ if (isset($_POST['remake'])) {
             <div class="alert alert-info" role="alert">
               Digite abaixo o motivo da reanálise.
             </div>
-            <ul class="list-group">
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="form-group area">
-                  <h5>Motivo</h5>
-                  <textarea class="form-control" name="inputRemake" rows="3" minlength="10" maxlength="200" placeholder="Descreva o motivo da reanálise" required></textarea>
-                </div>
-              </li>
-            </ul>
+            <div class="form-group area">
+              <h5>Motivo</h5>
+              <textarea class="form-control" name="inputRemake" rows="3" minlength="10" maxlength="200" placeholder="Descreva o motivo da reanálise" required></textarea>
+            </div>
           </div>
           <div class="modal-footer">
-              <input name="inputIdReserva" id="inputIdReserva" type="hidden">
-              <button name="remake" type="submit" class="btn btn-success">Refazer</a>
+            <input name="inputIdReserva" id="inputIdReserva" type="hidden">
+            <button name="remake" type="submit" class="btn btn-success">Refazer</a>
               <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
           </div>
         </div>

@@ -185,14 +185,10 @@ function showMyReserve()
           <div class="alert alert-warning" role="alert">
             Abaixo está o motivo da reanálise.
           </div>
-          <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <div class="form-group area">
-                <h5>Motivo</h5>
-                <textarea id="inputRenew" class="form-control" name="motive" rows="3" minlength="10" maxlength="200" disabled></textarea>
-              </div>
-            </li>
-          </ul>
+          <div class="form-group area">
+            <h5>Motivo</h5>
+            <textarea id="inputRenew" class="form-control" name="motive" rows="3" minlength="10" maxlength="200" disabled></textarea>
+          </div>
         </div>
         <div class="modal-footer">
           <a href="#" id="renewReserve" type="button" class="btn btn-success">Refazer</a>
