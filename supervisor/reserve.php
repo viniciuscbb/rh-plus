@@ -200,7 +200,7 @@ if (isset($_POST['delete'])) {
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark barra">
-    <a class="navbar-brand" href="#">RH Plus</a>
+    <a class="navbar-brand" href="index.php">RH Plus</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
       <span class="navbar-toggler-icon"></span>
     </button>

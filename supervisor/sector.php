@@ -157,7 +157,7 @@ if (isset($_POST['next'])) {
 
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark barra">
-    <a class="navbar-brand" href="#">RH Plus</a>
+    <a class="navbar-brand" href="index.php">RH Plus</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -196,7 +196,7 @@ if (isset($_POST['next'])) {
       <hr>
       <p>Clique em Prosseguir para continuar.</p>
     </div>
-    <table class="table table-striped tabela">
+    <table class="table table-striped">
       <thead>
         <tr>
           <th scope="col">Opc</th>

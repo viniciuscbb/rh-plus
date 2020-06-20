@@ -78,11 +78,9 @@ function showMyReserve()
       echo '
       <tr>
         <th>
-          ' . $id_reserva . '
+          ' . $setor . '
           <input type="hidden" id="idReserva" value=' . $id_reserva . '> 
         </th>
-        <td><b>' . $setor . '</b></td>
-        
         <td>
           <h6>
             <span class="badge badge-primary badge-pill">
@@ -91,8 +89,6 @@ function showMyReserve()
           </h6>
         </td>
         <td><h6>' . $status . '</h6></td>
-        
-        
       </tr>';
     }
   }
@@ -132,7 +128,7 @@ function showMyReserve()
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark barra">
-    <a class="navbar-brand" href="#">RH Plus</a>
+    <a class="navbar-brand" href="index.php">RH Plus</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -156,10 +152,9 @@ function showMyReserve()
       Abaixo estão suas reservas realizadas.
     </div>
 
-    <table class="table table-striped tabela">
+    <table class="table table-striped">
       <thead>
         <tr>
-          <th scope="col">Cod.</th>
           <th scope="col">Setor</th>
           <th scope="col">Data</th>
           <th scope="col">Status</th>

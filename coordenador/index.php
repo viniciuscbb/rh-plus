@@ -9,6 +9,44 @@ $mensagem = '<div class="alert alert-info" role="alert">
               <h6>Abaixo estão as reservas pendentes.</h6>
             </div>';
 
+
+if (isset($_GET["msg"])) {
+  $msg = $_GET["msg"];
+  $id_reserva = $_GET["id"];
+  switch ($msg) {
+    case 1:
+      $mensagem = '<div class="alert alert-success" role="alert">
+                    <h6>Reserva do setor ' . getReserve($id_reserva) . ' aceita com sucesso!</h6>
+                   </div>';
+      break;
+    case 2:
+      $mensagem = '<div class="alert alert-danger" role="alert">
+                    <h6>Erro ao aceitar reserva do setor ' . getReserve($id_reserva) . '!</h6>
+                   </div>';
+      break;
+    case 3:
+      $mensagem = '<div class="alert alert-success" role="alert">
+                    <h6>Reserva do setor ' . getReserve($id_reserva) . ' negada com sucesso!</h6>
+                   </div>';
+      break;
+    case 4:
+      $mensagem = '<div class="alert alert-danger" role="alert">
+                    <h6>Erro ao negar reserva do setor ' . getReserve($id_reserva) . '!</h6>
+                   </div>';
+      break;
+    case 5:
+      $mensagem = '<div class="alert alert-success" role="alert">
+                    <h6>Pedido de reanálise do setor ' . getReserve($id_reserva) . ' enviada com sucesso!</h6>
+                   </div>';
+      break;
+    case 6:
+      $mensagem = '<div class="alert alert-danger" role="alert">
+                    <h6>Erro ao enviar pedido de reanálise do setor ' . getReserve($id_reserva) . '!</h6>
+                   </div>';
+      break;
+  }
+}
+
 function getUserName()
 {
   $id_login = $_SESSION['id_login'];
@@ -123,10 +161,11 @@ function getMotive($id_reserva)
   return $motivo;
 }
 
-function setTurno($turno){
-  if($turno == 0){
+function setTurno($turno)
+{
+  if ($turno == 0) {
     return 'Matutino';
-  }else{
+  } else {
     return 'Noturno';
   }
 }
@@ -282,7 +321,7 @@ function showReservers()
               </div>
             </li>
           </ul>
-          <form method="post">
+          <form action="send.php" method="post">
             <div class="botoes">
               <input name="idReserva" type="hidden" value=' . $id_reserva . '>
               <button type="submit" name="accept" class="btn btn-success">Aceitar</button>
@@ -302,83 +341,7 @@ function showReservers()
     </div>';
   }
 }
-
-
-/*Status reserva
-1 = Pendente para Diretor
-2 = Pendente para Coordenador
-3 = Aprovado
-4 = Refazer
-5 = Negado
-*/
-
-if (isset($_POST['accept'])) {
-  $id_reserva = ($_POST['idReserva']);
-
-  $conection = conection();
-  $sql = "UPDATE 
-            reservas 
-          SET 
-            status = 1
-          WHERE 
-            id_reserva = '$id_reserva'";
-  $query = mysqli_query($conection, $sql);
-  if ($query) {
-    $mensagem = '<div class="alert alert-success" role="alert">
-                  <h6>Reserva do setor ' . getReserve($id_reserva) . ' aceita com sucesso!</h6>
-                 </div>';
-  } else {
-    $mensagem = '<div class="alert alert-danger" role="alert">
-                  <h6>Erro ao aceitar reserva do setor ' . getReserve($id_reserva) . '!</h6>
-                 </div>';
-  }
-}
-
-if (isset($_POST['deny'])) {
-  $id_reserva = ($_POST['idReserva']);
-  $conection = conection();
-  $sql = "UPDATE 
-            reservas 
-          SET 
-            status = 5
-          WHERE 
-            id_reserva = '$id_reserva'";
-  $query = mysqli_query($conection, $sql);
-  if ($query) {
-    $mensagem = '<div class="alert alert-success" role="alert">
-                  <h6>Reserva do setor ' . getReserve($id_reserva) . ' negada com sucesso!</h6>
-                 </div>';
-  } else {
-    $mensagem = '<div class="alert alert-danger" role="alert">
-                  <h6>Erro ao negar reserva do setor ' . getReserve($id_reserva) . '!</h6>
-                 </div>';
-  }
-}
-
-if (isset($_POST['remake'])) {
-  $id_reserva = ($_POST['inputIdReserva']);
-  $refazer = ($_POST['inputRemake']);
-  $conection = conection();
-  $sql = "UPDATE 
-            reservas 
-          SET 
-            status = 4, refazer = '$refazer'
-          WHERE 
-            id_reserva = '$id_reserva'";
-  $query = mysqli_query($conection, $sql);
-  if ($query) {
-    $mensagem = '<div class="alert alert-success" role="alert">
-                  <h6>Pedido de reanálise do setor ' . getReserve($id_reserva) . ' enviada com sucesso!</h6>
-                 </div>';
-  } else {
-    $mensagem = '<div class="alert alert-danger" role="alert">
-                  <h6>Erro ao enviar pedido de reanálise do setor ' . getReserve($id_reserva) . '!</h6>
-                 </div>';
-  }
-}
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt_BR">
@@ -393,7 +356,7 @@ if (isset($_POST['remake'])) {
 
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark barra">
-    <a class="navbar-brand" href="#">RH Plus</a>
+    <a class="navbar-brand" href="index.php">RH Plus</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -428,7 +391,7 @@ if (isset($_POST['remake'])) {
   <!-- Modal -->
   <div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <form method="post">
+      <form action="send.php" method="post">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Confirme a reanálise</h5>

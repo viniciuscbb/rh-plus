@@ -22,23 +22,23 @@ nav ol{
   width: 100%;
 }
 
+tr{
+  font-size: 15px!important;
+}
+
 .setores p{
   font-size: 15px;
   margin: 0 10px;
 }
 
 .input-number{
-  width: 60px!important;
+  width: 70px!important;
   height: 30px!important;
 }
 
 .checkbox{
   height: 20px;
   width: 20px;
-}
-
-.tabela{
-  font-size: 13px;
 }
 
 .button{
@@ -102,4 +102,23 @@ nav ol{
 
 .area{
   width: 100%!important;
+}
+
+@media screen and (max-width: 420px){
+  
+  .input-number{
+    width: 50px!important;
+    height: 30px!important;
+  }
+
+  .tabela{
+    width: 90%!important;
+    font-size: 13px!important;
+  }
+  .table td, .table th {
+    padding: .71rem;
+  }
+  tr{
+    font-size: 12px!important;
+  }
 }
