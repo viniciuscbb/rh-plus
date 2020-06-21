@@ -16,16 +16,9 @@ function teste() {
   var feriado = document.getElementById('feriado').value;
   var data = document.getElementById('data').value;
 
-  //Verifica se é final de semana e adiciona o numero pra multiplicar
+  //Verifica se é final de semana ou feriado e adiciona o numero pra multiplicar
   var Minha_data = new Date(data);
-  if (Minha_data.getDay() == 0 || Minha_data.getDay() == 6) {
-    eFeriado = 2;
-  } else {
-    fereFeriadoiado = 1;
-  }
-
-  //Verifica se é feriado e adiciona o numero pra multiplicar
-  if (feriado == 'true') {
+  if (Minha_data.getDay() == 0 || Minha_data.getDay() == 6 || feriado == 'true') {
     eFeriado = 2;
   } else {
     eFeriado = 1;
