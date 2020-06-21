@@ -99,13 +99,13 @@ function insertList($id_colaborador)
 }
 
 //Insere na tabela reserva
-function createReserve()
+function createReserve($date)
 {
   $id_login = $_SESSION['id_login'];
   $id_sector = htmlspecialchars($_GET["sector"]);
 
   $conection = conection();
-  $sql = "INSERT INTO reservas (id_supervisor, id_setor, valor, status) VALUES ('$id_login', '$id_sector', 0, 0)";
+  $sql = "INSERT INTO reservas (id_supervisor, id_setor, valor, status, data) VALUES ('$id_login', '$id_sector', 0, 0, '$date')";
   $query = mysqli_query($conection, $sql);
 
   if ($query) {
@@ -119,11 +119,12 @@ function createReserve()
 if (isset($_POST['next'])) {
   $nextPage = 0;
   //Pega os dados do input e separa
+  $date = ($_POST['data']);
   $idSelected = ($_POST['idSelected']);
   $array = explode('-', $idSelected);
 
   //Cria a reserva
-  createReserve();
+  createReserve($date);
 
   //Envia os dados separados para o banco
   foreach ($array as $values) {
@@ -156,7 +157,7 @@ if (isset($_POST['next'])) {
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark barra">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark barra">
     <a class="navbar-brand" href="index.php">RH Plus</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Alterna navegação">
       <span class="navbar-toggler-icon"></span>
@@ -180,7 +181,7 @@ if (isset($_POST['next'])) {
     <div class="alert alert-info" role="alert">
       Setor selecionado: <b><?php echo selectedSector(); ?>.</b>
       <hr>
-      Selecione os colaboradores desejado
+      Selecione os colaboradores desejados e clique em prosseguir.
     </div>
 
     <?php
@@ -190,12 +191,6 @@ if (isset($_POST['next'])) {
       echo "</div>";
     }
     ?>
-
-    <div id="saveSuccess" class="alert alert-success" role="alert" style="display: none;">
-      <h4 class="alert-heading">Salvo com sucesso!</h4>
-      <hr>
-      <p>Clique em Prosseguir para continuar.</p>
-    </div>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -210,15 +205,45 @@ if (isset($_POST['next'])) {
       </tbody>
     </table>
     <div class="button">
-      <button id="save" type="button" class="btn btn-success">Salvar</button>
-      <form method="post">
-        <button id="nextBtn" name="next" type="submit" class="btn btn-primary" disabled>Prosseguir</button>
-        <input id="total" name="idSelected" type="text" style="display: none;">
-      </form>
+      <button id="save" type="button" class="btn btn-info" data-toggle="modal" data-target="#modalExemplo">Prosseguir</button>
     </div>
   </div>
 
-
+  <!-- Modal -->
+  <div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Data da reserva</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post">
+          <div class="modal-body">
+            <div class="alert alert-info" role="alert">
+              Informe data da reserva.
+            </div>
+            <ul class="list-group">
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <h5>
+                  Data
+                </h5>
+                <input type="date" class="form-control data" name="data" placeholder="Data" required>
+              </li>
+            </ul>
+          </div>
+          <div class="modal-footer">
+            <form method="post">
+              <input id="total" name="idSelected" type="hidden">
+              <button id="nextBtn" name="next" type="submit" class="btn btn-success">Confirmar</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            </form>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   <script src="../js/jquery.min.js"></script>
   <script src="../js/popper.min.js"></script>
   <script src="../js/bootstrap.min.js"></script>

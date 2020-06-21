@@ -49,10 +49,11 @@ function getFood($id_reserva)
   return $alimentacao;
 }
 
-function setTurno($turno){
-  if($turno == 0){
+function setTurno($turno)
+{
+  if ($turno == 0) {
     return 'Matutino';
-  }else{
+  } else {
     return 'Noturno';
   }
 }
@@ -201,6 +202,7 @@ function showReservers()
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link active" href="index.php">Início <span class="sr-only">(Página atual)</span></a>
+        <a class="nav-item nav-link" disabled href="holidays.php">Feriados</a>
       </div>
     </div>
   </nav>

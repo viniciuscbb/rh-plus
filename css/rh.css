@@ -1,0 +1,88 @@
+.search {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin: 0 5px;
+}
+
+input{
+  margin-right: 5px;
+}
+
+body{
+  margin: 5px
+}
+
+nav ol{
+  display: flex;
+  justify-content: center;
+}
+
+.tabela{
+  font-size: 13px;
+}
+
+.button{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.barra{
+  margin: -5px;
+  margin-bottom: 15px!important;
+}
+.botaoClass{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.botaoClass img{
+  height: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.botaoClass .deleteBtn{
+  height: 22px;
+  width: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.holidays{
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+@media screen and (max-width: 420px){
+  .holidays button{
+    margin-left: 5px;
+  }
+
+  .table{
+    font-size: 12px!important;
+  }
+
+  .table h5{
+    font-size: 14px!important;
+  }
+
+  .form-row{
+    flex-direction: column;
+  }
+  .form-row .col-2{
+    max-width: 100%;
+    margin-top: 5px!important;
+    margin-bottom: 5px!important;
+  }
+  .form-row .col{
+    margin-top: 5px!important;
+  }
+
+  .alert {
+    margin-bottom: 10px;
+  }
+}

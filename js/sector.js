@@ -1,4 +1,3 @@
-var nextBtn = document.getElementById('nextBtn');
 var salvar = '';
 
 var btnSave = document.getElementById('save').onclick = function(){
@@ -10,11 +9,7 @@ var btnSave = document.getElementById('save').onclick = function(){
   }
   
   var t = document.getElementById('total').value = salvar;
-  var saveSuccess = document.getElementById('saveSuccess');
-  saveSuccess.style = 'display: block';
-  nextBtn.disabled =false;
 }
-
 
 function change(idReserva, idSetor, motive){
   const btnRenew = document.getElementById('renewReserve');

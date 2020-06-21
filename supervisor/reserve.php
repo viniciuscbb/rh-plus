@@ -16,6 +16,50 @@ function selectedSector()
   return $setor;
 }
 
+function getDatee()
+{
+  $id_reserva = htmlspecialchars($_GET["reserve"]);
+  $conection = conection();
+  $sql = "SELECT data FROM reservas WHERE id_reserva='$id_reserva'";
+  $query = mysqli_query($conection, $sql);
+  $row = mysqli_fetch_array($query);
+  $date = $row['data'];
+  $date =  date("Y/m/d", strtotime($date));
+  return $date;
+}
+
+//Pega os feriados
+function getHoliday($date)
+{
+  $conection = conection();
+  $sql = "SELECT data FROM feriados WHERE data='$date'";
+  $query = mysqli_query($conection, $sql);
+  $total = mysqli_num_rows($query);
+
+  if ($total > 0) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+//Compara a data da reserva com o feriado
+function getTodayHoliday()
+{
+  $id_reserva = htmlspecialchars($_GET["reserve"]);
+  $conection = conection();
+  $sql = "SELECT data FROM reservas WHERE id_reserva='$id_reserva'";
+  $query = mysqli_query($conection, $sql);
+  $row = mysqli_fetch_array($query);
+  $date = $row['data'];
+
+  if (getHoliday($date)) {
+    return 'true';
+  } else {
+    return 'false';
+  }
+}
+
 if (isset($_POST['Delete'])) {
   $id_colaborador = $_POST['id_colaborador'];
   $conection = conection();
@@ -128,7 +172,6 @@ if (isset($_POST['createReserve'])) {
   $valorTransporte = ($_POST['valorTransporte']);
   $valorAlimentacao = ($_POST['valorAlimentacao']);
   $valorHoras = ($_POST['valorHoras']);
-  $data = ($_POST['data']);
   $turno = ($_POST['turno']);
   $motive = ($_POST['motive']);
   $id_reserva = htmlspecialchars($_GET["reserve"]);
@@ -146,7 +189,6 @@ if (isset($_POST['createReserve'])) {
             horas = '$valorHoras', 
             status = '$status', 
             turno = '$turno', 
-            data = '$data',
             motivo = '$motive',
             refazer = null
           WHERE 
@@ -256,7 +298,6 @@ if (isset($_POST['delete'])) {
     </div>
   </div>
 
-
   <!-- Modal -->
   <div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -270,14 +311,29 @@ if (isset($_POST['delete'])) {
         <form method="post">
           <div class="modal-body">
             <div class="alert alert-info" role="alert">
-              Informe data, turno e motivo da reserva.
+              Informe turno e motivo da reserva.
             </div>
             <ul class="list-group">
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <h5>
-                  Data
+                  Total de colaboradores
                 </h5>
-                <input type="date" class="form-control data" name="data" placeholder="Data" required>
+                <h4>
+                  <span class="badge badge-primary badge-pill" id="totalColaboradores">
+                    0
+                  </span>
+                </h4>
+              </li>
+
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <h5>
+                  Valor total
+                </h5>
+                <h4>
+                  <span class="badge badge-primary badge-pill" id="totalValor">
+                    R$ 0,00
+                  </span>
+                </h4>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <div class="form-group area">
@@ -289,26 +345,6 @@ if (isset($_POST['delete'])) {
                     <option value="1">Noturno</option>
                   </select>
                 </div>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <h5>
-                  Total de colaboradores
-                </h5>
-                <h4>
-                  <span class="badge badge-primary badge-pill" id="totalColaboradores">
-                    0
-                  </span>
-                </h4>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <h5>
-                  Valor total
-                </h5>
-                <h4>
-                  <span class="badge badge-primary badge-pill" id="totalValor">
-                    R$ 0,00
-                  </span>
-                </h4>
               </li>
               <li class="list-group-item d-flex justify-content-between align-items-center">
                 <div class="form-group area">
@@ -327,6 +363,8 @@ if (isset($_POST['delete'])) {
             <input id="valorTransporte" name="valorTransporte" type="hidden">
             <input id="valorAlimentacao" name="valorAlimentacao" type="hidden">
             <input id="valorHoras" name="valorHoras" type="hidden">
+            <input id="feriado" value=<?php echo getTodayHoliday(); ?> type="hidden">
+            <input id="data" value=<?php echo getDatee(); ?> type="hidden">
 
           </div>
         </form>

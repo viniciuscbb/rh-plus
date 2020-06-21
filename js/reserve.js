@@ -1,6 +1,7 @@
 teste();
 function teste() {
   var salvar = '';
+  var eFeriado = '';
   var valorTotalHoras = 0;
   var valorTotalRotas = 0;
   var valorTotalAlimentacao = 0;
@@ -12,6 +13,23 @@ function teste() {
   var horas = document.querySelectorAll('input.horas');
   var valorHora = document.querySelectorAll('input.valorHora');
   var valorRota = document.querySelectorAll('input.valorRota');
+  var feriado = document.getElementById('feriado').value;
+  var data = document.getElementById('data').value;
+
+  //Verifica se é final de semana e adiciona o numero pra multiplicar
+  var Minha_data = new Date(data);
+  if (Minha_data.getDay() == 0 || Minha_data.getDay() == 6) {
+    eFeriado = 2;
+  } else {
+    fereFeriadoiado = 1;
+  }
+
+  //Verifica se é feriado e adiciona o numero pra multiplicar
+  if (feriado == 'true') {
+    eFeriado = 2;
+  } else {
+    eFeriado = 1;
+  }
 
   for (id = 0; id < transporte.length; id++) {
     var transporteCheck = transporte[id];
@@ -43,11 +61,12 @@ function teste() {
 
     //verifica os input de hora extra
     if (HorasInput !== 0) {
-      result = HorasInput.value * 2; //Adiciona a hora extra 100%
+      result = HorasInput.value * eFeriado; //Adiciona a hora extra 100%
       salvar += result;
       valorTotalHoras += valorHoraInput.value * result;
     }
 
+    //Se campo hora extra está vazio ou menor q 0 da erro
     if (HorasInput.value == '' || HorasInput.value < 0) {
       HorasInput.value = 0;
       alert('Os campos Horas Extras devem ser preenchidos!\nCaso não haja hora extra, preencha com 0.')
@@ -77,10 +96,10 @@ function teste() {
   //compara cada id e soma o valor
   //var idQuatidade = "";
   var conte = 0;
-  for (var prop  in dados) {
+  for (var prop in dados) {
 
     valorTotalRotas += parseInt(valorRota[conte].value);
-    conte ++;
+    conte++;
     //idQuatidade = idQuatidade + prop + "-" + dados[prop] + ";";
   }
 
