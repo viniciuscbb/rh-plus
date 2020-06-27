@@ -19,7 +19,6 @@ function getSector($id_setor)
   return $setor;
 }
 
-
 function getCount($id_reserva)
 {
   $conection = conection();
@@ -60,7 +59,7 @@ function showRoutes()
             colaboradores as C ON L.id_colaborador = C.id_colaborador 
           INNER JOIN
             rotas as RT ON C.id_rota = RT.id_rota
-          WHERE L.id_reserva = '$id_reserva'
+          WHERE L.id_reserva = '$id_reserva' AND L.transporte = 1
           GROUP BY
             rota
           ORDER BY
