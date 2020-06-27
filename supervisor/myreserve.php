@@ -72,7 +72,7 @@ function showMyReserve()
     }
 
     date_default_timezone_set('America/Sao_Paulo');
-    $today = date("Y-m-d");
+    $today = date("Y-m");
     if (strtotime($data) >= strtotime($today)) {
       $data =  date("d/m/Y", strtotime($data));
       echo '
@@ -149,7 +149,7 @@ function showMyReserve()
 
   <div class="setores">
     <div class="alert alert-info" role="alert">
-      Abaixo estão suas reservas realizadas.
+      Abaixo estão suas reservas realizadas no mês.
     </div>
 
     <table class="table table-striped">

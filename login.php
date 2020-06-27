@@ -18,8 +18,8 @@ function userLogin($login, $password)
 }
 
 if (isset($_POST['entrar'])) {
-  $login = ($_POST['login']);
-  $password = ($_POST['password']);
+  $login = $_POST['login'];
+  $password = md5($_POST['password']);
 
   if (userLogin($login, $password)) {
     $id_login = getIdUser($login);

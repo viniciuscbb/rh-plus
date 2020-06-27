@@ -99,13 +99,29 @@ function insertList($id_colaborador)
 }
 
 //Insere na tabela reserva
-function createReserve($date)
+function createReserve($turno, $date, $motive)
 {
   $id_login = $_SESSION['id_login'];
   $id_sector = htmlspecialchars($_GET["sector"]);
 
   $conection = conection();
-  $sql = "INSERT INTO reservas (id_supervisor, id_setor, valor, status, data) VALUES ('$id_login', '$id_sector', 0, 0, '$date')";
+  $sql = "INSERT INTO 
+            reservas 
+            (id_supervisor, 
+            id_setor, 
+            valor, 
+            status, 
+            turno,
+            data,
+            motivo) 
+          VALUES 
+            ('$id_login', 
+            '$id_sector', 
+            0, 
+            0,
+            '$turno',
+            '$date',
+            '$motive')";
   $query = mysqli_query($conection, $sql);
 
   if ($query) {
@@ -120,11 +136,13 @@ if (isset($_POST['next'])) {
   $nextPage = 0;
   //Pega os dados do input e separa
   $date = ($_POST['data']);
+  $turno = ($_POST['turno']);
+  $motive = ($_POST['motive']);
   $idSelected = ($_POST['idSelected']);
   $array = explode('-', $idSelected);
 
   //Cria a reserva
-  createReserve($date);
+  createReserve($turno, $date, $motive);
 
   //Envia os dados separados para o banco
   foreach ($array as $values) {
@@ -222,7 +240,7 @@ if (isset($_POST['next'])) {
         <form method="post">
           <div class="modal-body">
             <div class="alert alert-info" role="alert">
-              Informe data da reserva.
+              Informe data, turno e motivo da reserva.
             </div>
             <ul class="list-group">
               <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -230,6 +248,23 @@ if (isset($_POST['next'])) {
                   Data
                 </h5>
                 <input type="date" class="form-control data" name="data" placeholder="Data" required>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="form-group area">
+                  <h5>
+                    Turno
+                  </h5>
+                  <select class="form-control" name="turno" required>
+                    <option value="0">Diurno</option>
+                    <option value="1">Noturno</option>
+                  </select>
+                </div>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div class="form-group area">
+                  <h5>Motivo</h5>
+                  <textarea class="form-control" name="motive" rows="3" minlength="10" maxlength="200" placeholder="Descreva o motivo desta reserva" required></textarea>
+                </div>
               </li>
             </ul>
           </div>

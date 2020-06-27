@@ -5,20 +5,6 @@ require_once '../functions/global.php';
 
 acessoRestrito(2);
 
-function getUserName()
-{
-  $id_login = $_SESSION['id_login'];
-  $conection = conection();
-  $sql = "SELECT nome FROM adm WHERE id_adm='$id_login'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $nome = $row['nome'];
-
-  $nome = explode(" ", $nome);
-
-  return $nome[0];
-}
-
 function getSector($id_setor)
 {
   $conection = conection();
@@ -47,15 +33,6 @@ function getFood($id_reserva)
   $row = mysqli_fetch_array($query);
   $alimentacao = $row['a'];
   return $alimentacao;
-}
-
-function setTurno($turno)
-{
-  if ($turno == 0) {
-    return 'Matutino';
-  } else {
-    return 'Noturno';
-  }
 }
 
 

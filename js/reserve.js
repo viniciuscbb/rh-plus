@@ -55,7 +55,7 @@ function teste() {
     //verifica os input de hora extra
     if (HorasInput !== 0) {
       result = HorasInput.value * eFeriado; //Adiciona a hora extra 100%
-      salvar += result;
+      salvar += HorasInput.value;
       valorTotalHoras += valorHoraInput.value * result;
     }
 

@@ -47,20 +47,6 @@ if (isset($_GET["msg"])) {
   }
 }
 
-function getUserName()
-{
-  $id_login = $_SESSION['id_login'];
-  $conection = conection();
-  $sql = "SELECT nome FROM adm WHERE id_adm='$id_login'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $nome = $row['nome'];
-
-  $nome = explode(" ", $nome);
-
-  return $nome[0];
-}
-
 function getNameSupervisor($id_adm)
 {
   $conection = conection();
@@ -160,16 +146,6 @@ function getMotive($id_reserva)
   $motivo = $row['motivo'];
   return $motivo;
 }
-
-function setTurno($turno)
-{
-  if ($turno == 0) {
-    return 'Matutino';
-  } else {
-    return 'Noturno';
-  }
-}
-
 
 function showReservers()
 {

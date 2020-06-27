@@ -72,6 +72,9 @@ if (isset($_POST['Delete'])) {
 
 function showCollaborator()
 {
+  $id_reserva = htmlspecialchars($_GET["reserve"]);
+  $id_sector = htmlspecialchars($_GET["sector"]);
+
   $conection = conection();
   $sql = "SELECT 
             C.id_colaborador, C.nome, RT.rota, C.hora, C.id_rota, RT.valor
@@ -83,7 +86,7 @@ function showCollaborator()
             colaboradores as C ON L.id_colaborador = C.id_colaborador 
           INNER JOIN
             rotas as RT ON C.id_rota = RT.id_rota
-          WHERE R.status = 0 OR R.status = 4
+          WHERE R.id_reserva = '$id_reserva' AND R.id_setor = '$id_sector' AND R.status = 0 OR R.status = 4
           ORDER BY
             nome";
 
@@ -172,8 +175,6 @@ if (isset($_POST['createReserve'])) {
   $valorTransporte = ($_POST['valorTransporte']);
   $valorAlimentacao = ($_POST['valorAlimentacao']);
   $valorHoras = ($_POST['valorHoras']);
-  $turno = ($_POST['turno']);
-  $motive = ($_POST['motive']);
   $id_reserva = htmlspecialchars($_GET["reserve"]);
   $arrayOne = explode(';', $total);
 
@@ -188,8 +189,6 @@ if (isset($_POST['createReserve'])) {
             alimentacao = '$valorAlimentacao', 
             horas = '$valorHoras', 
             status = '$status', 
-            turno = '$turno', 
-            motivo = '$motive',
             refazer = null
           WHERE 
             id_reserva = '$id_reserva'";
@@ -311,7 +310,7 @@ if (isset($_POST['delete'])) {
         <form method="post">
           <div class="modal-body">
             <div class="alert alert-info" role="alert">
-              Informe turno e motivo da reserva.
+              Confira os dados da reserva e confirme.
             </div>
             <ul class="list-group">
               <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -334,24 +333,7 @@ if (isset($_POST['delete'])) {
                     R$ 0,00
                   </span>
                 </h4>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="form-group area">
-                  <h5>
-                    Turno
-                  </h5>
-                  <select class="form-control" name="turno" required>
-                    <option value="0">Matutino</option>
-                    <option value="1">Noturno</option>
-                  </select>
-                </div>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <div class="form-group area">
-                  <h5>Motivo</h5>
-                  <textarea class="form-control" name="motive" rows="3" minlength="10" maxlength="200" placeholder="Descreva o motivo desta reserva" required></textarea>
-                </div>
-              </li>
+              </li>              
             </ul>
           </div>
           <div class="modal-footer">

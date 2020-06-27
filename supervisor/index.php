@@ -5,20 +5,6 @@ require_once '../functions/global.php';
 
 acessoRestrito(1);
 
-function getUserName()
-{
-  $id_login = $_SESSION['id_login'];
-  $conection = conection();
-  $sql = "SELECT nome FROM adm WHERE id_adm='$id_login'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $nome = $row['nome'];
-
-  $nome = explode(" ", $nome);
-
-  return $nome[0];
-}
-
 function intervaloEntreDatas($inicio, $fim, $agora)
 {
   $inicioTimestamp = strtotime($inicio);
