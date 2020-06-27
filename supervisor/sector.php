@@ -6,17 +6,6 @@ $erro = "";
 
 acessoRestrito(1);
 
-function getUserName()
-{
-  $id_login = $_SESSION['id_login'];
-  $conection = conection();
-  $sql = "SELECT nome FROM adm WHERE id_adm='$id_login'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $nome = $row['nome'];
-  return $nome;
-}
-
 function selectedSector()
 {
   $id_sector = htmlspecialchars($_GET["sector"]);
