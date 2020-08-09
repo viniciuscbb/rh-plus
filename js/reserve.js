@@ -15,12 +15,15 @@ function teste() {
   var valorRota = document.querySelectorAll('input.valorRota');
   var feriado = document.getElementById('feriado').value;
   var data = document.getElementById('data').value;
+  var horasMesTotal = document.querySelectorAll('input.horasMesTotal');
 
   //Verifica se é final de semana ou feriado e adiciona o numero pra multiplicar
   var Minha_data = new Date(data);
   if (Minha_data.getDay() == 0 || Minha_data.getDay() == 6 || feriado == 'true') {
+    var finalDeSemana = true
     eFeriado = 2;
   } else {
+    var finalDeSemana = false
     eFeriado = 1;
   }
 
@@ -29,6 +32,7 @@ function teste() {
     var alimentacaoCheck = alimentacao[id];
     var HorasInput = horas[id];
     var valorHoraInput = valorHora[id];
+    var horasMesTotalInput = horasMesTotal[id];
 
     salvar += transporteCheck.value + "-";
 
@@ -62,7 +66,22 @@ function teste() {
     //Se campo hora extra está vazio ou menor q 0 da erro
     if (HorasInput.value == '' || HorasInput.value < 0) {
       HorasInput.value = 0;
-      alert('Os campos Horas Extras devem ser preenchidos!\nCaso não haja hora extra, preencha com 0.')
+      alert('Os campos Horas Extras devem ser preenchidos!\nCaso não haja hora extra, preencha com 0.');
+    }
+    
+    var horasDisponivel = parseInt(HorasInput.value) + parseInt(horasMesTotalInput.value);
+    if (horasDisponivel > 22){
+      HorasInput.value = 0;
+      horasDisponivel = parseInt(horasMesTotalInput.value) - 22;
+      alert('Limite de horas no mês excedido!\nDisponível '+ Math.abs(horasDisponivel) +'h.');
+    }
+    
+    if (finalDeSemana == false & HorasInput.value > 1.12) {
+      HorasInput.value = 0;
+      alert('Somente 1.12 horas extras permitido no meio de semana!');
+    }else if (finalDeSemana == true & HorasInput.value > 6) {
+      HorasInput.value = 0;
+      alert('Somente 6 horas extras permitido nos finais de semanas!');
     }
 
     if (id !== transporte.length - 1) {
@@ -118,5 +137,26 @@ function teste() {
 
 }
 
+function selectFood(){
+  var alimentacao = document.querySelectorAll('input.alimentacao');
+  for (id = 0; id < alimentacao.length; id++) {
+    if (alimentacao[id].checked){
+      alimentacao[id].checked = false;
+    }else{
+      alimentacao[id].checked = true;
+    }
+  }
+}
+
+function selectTransport(){
+  var transporte = document.querySelectorAll('input.transporte');
+  for (id = 0; id < transporte.length; id++) {
+    if (transporte[id].checked){
+      transporte[id].checked = false;
+    }else{
+      transporte[id].checked = true;
+    }
+  }
+}
 
 

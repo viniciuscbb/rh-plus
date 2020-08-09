@@ -90,7 +90,30 @@ nav ol{
   margin-top: 10px;
 }
 
-
 .area{
   width: 100%!important;
+}
+
+#piechart_div, #barchart_div{
+  width: 600px!important; 
+  height: 400px!important;
+}
+
+button{
+  margin-right: 5px;
+}
+
+@media screen and (max-width: 420px){
+  body{
+    height: 1050px;
+  }
+  .charts .container .row{
+    display: flex;
+    flex-direction: column;
+  }
+  #piechart_div, #barchart_div{
+    margin-left: -50px;
+    width: 500px!important; 
+    height: 300px!important;
+  }
 }

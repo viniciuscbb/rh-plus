@@ -5,6 +5,15 @@ require_once '../functions/global.php';
 
 acessoRestrito(1);
 
+$conection = conection();
+$sql = "SELECT id_reserva FROM reservas WHERE valor = 0 AND transporte IS NULL AND alimentacao IS NULL AND horas IS NULL";
+$query = mysqli_query($conection, $sql);
+while ($row = mysqli_fetch_array($query)) {
+  $id_reserva = $row['id_reserva'];
+  $result2 = mysqli_query($conection, "DELETE FROM lista WHERE id_reserva = '$id_reserva'");
+  $result = mysqli_query($conection, "DELETE FROM reservas WHERE id_reserva = '$id_reserva'");
+}
+
 function intervaloEntreDatas($inicio, $fim, $agora)
 {
   $inicioTimestamp = strtotime($inicio);
@@ -23,7 +32,7 @@ function showSector()
   //Define o horario inicio e fim para realizar uma reserva
   date_default_timezone_set('America/Sao_Paulo');
   $inicio = '06:00:00';
-  $fim    = '18:30:00';
+  $fim    = '20:30:00';
   $agora  = date("H:i:s");
 
   if (intervaloEntreDatas($inicio, $fim, $agora)) {

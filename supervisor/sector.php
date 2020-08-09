@@ -27,6 +27,29 @@ function selectRoute($id_rota)
   return $rota;
 }
 
+function sumHourOfMonth($id_colaborador){
+  date_default_timezone_set('America/Sao_Paulo');
+  $mes  = date('m');
+  $conection = conection();
+  $sql = "SELECT 
+            sum(L.hora) as total
+          FROM 
+            lista as L
+          INNER JOIN
+            reservas as R ON R.id_reserva = L.id_reserva
+          WHERE
+            MONTH(R.data) = '$mes' AND L.id_colaborador = '$id_colaborador'";
+  $query = mysqli_query($conection, $sql);
+  $row = mysqli_fetch_array($query);
+  $total = $row['total'];
+
+  if ($total == ''){
+    $total = 0;
+  }
+  return $total;
+
+}
+
 function showCollaborator()
 {
   $id_sector = htmlspecialchars($_GET["sector"]);
@@ -39,27 +62,46 @@ function showCollaborator()
     $cracha         = $row['cracha'];
     $rota           = selectRoute($row['id_rota']);
     $hora           = $row['hora'];
-    echo '
-    <tr>
-      <th>
-        <div class="form-check">
-          <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox" type="checkbox">
-        </div>
-      </th>
-      <td>' . $cracha . '</td>
-      <td><b>' . $nome . '</b></td>
-      <td>' . $rota . '</td>
-      <td style="display: none" id="' . $id_colaborador . '">' . $hora . '</td>
-    </tr>';
+    $total          = sumHourOfMonth($id_colaborador);
+
+    if($total < 22){
+      echo '
+      <tr>
+        <th>
+          <div class="form-check">
+            <input id="' . $id_colaborador . '" value="' . $id_colaborador . '" class="form-check-input position-static checkbox" type="checkbox">
+          </div>
+        </th>
+        <td>' . $cracha . '</td>
+        <td><b>' . $nome . '</b></td>
+        <td>' . $total . '</td>
+        <td>' . $rota . '</td>
+        <td style="display: none" id="' . $id_colaborador . '">' . $hora . '</td>
+      </tr>';
+    }else{
+      echo '
+      <tr>
+        <th>
+          <div class="form-check">
+          </div>
+        </th>
+        <td>' . $cracha . '</td>
+        <td><b>' . $nome . '</b></td>
+        <td>' . $total . '</td>
+        <td>' . $rota . '</td>
+        <td style="display: none" id="' . $id_colaborador . '">' . $hora . '</td>
+      </tr>';
+    }
   }
 }
 
 function getIdReserve()
 {
   $id_login = $_SESSION['id_login'];
+  $id_sector = htmlspecialchars($_GET["sector"]);
 
   $conection = conection();
-  $sql = "SELECT id_reserva FROM reservas where id_supervisor = '$id_login' and status = 0";
+  $sql = "SELECT id_reserva FROM reservas where id_supervisor = '$id_login' and id_setor = '$id_sector' and status = 0";
   $query = mysqli_query($conection, $sql);
   $row = mysqli_fetch_array($query);
   $id_reserva = $row['id_reserva'];
@@ -70,11 +112,6 @@ function getIdReserve()
 function insertList($id_colaborador)
 {
   $conection = conection();
-  $sql = "SELECT * FROM colaboradores where id_colaborador = '$id_colaborador'";
-  $query = mysqli_query($conection, $sql);
-  $row = mysqli_fetch_array($query);
-  $id_colaborador = $row['id_colaborador'];
-
   $id_reserve = getIdReserve();
 
   $sql = "INSERT INTO lista (id_reserva, id_colaborador) VALUES ('$id_reserve', '$id_colaborador')";
@@ -147,10 +184,7 @@ if (isset($_POST['next'])) {
     $erro = "Erro ao prosseguir com a reserva!";
   }
 }
-
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="pt_BR">
@@ -204,6 +238,7 @@ if (isset($_POST['next'])) {
           <th scope="col">Opc</th>
           <th scope="col">Matrícula</th>
           <th scope="col">Nome</th>
+          <th scope="col">H.Total</th>
           <th scope="col">Rota</th>
         </tr>
       </thead>

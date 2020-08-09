@@ -70,6 +70,29 @@ if (isset($_POST['Delete'])) {
   }
 }
 
+function sumHourOfMonth($id_colaborador)
+{
+  date_default_timezone_set('America/Sao_Paulo');
+  $mes  = date('m');
+  $conection = conection();
+  $sql = "SELECT 
+            sum(L.hora) as total
+          FROM 
+            lista as L
+          INNER JOIN
+            reservas as R ON R.id_reserva = L.id_reserva
+          WHERE
+            MONTH(R.data) = '$mes' AND L.id_colaborador = '$id_colaborador'";
+  $query = mysqli_query($conection, $sql);
+  $row = mysqli_fetch_array($query);
+  $total = $row['total'];
+
+  if ($total == '') {
+    $total = 0;
+  }
+  return $total;
+}
+
 function showCollaborator()
 {
   $id_reserva = htmlspecialchars($_GET["reserve"]);
@@ -94,10 +117,11 @@ function showCollaborator()
   while ($row = mysqli_fetch_array($query)) {
     $id_colaborador = $row['id_colaborador'];
     $nome           = $row['nome'];
-    $rotaC           = $row['rota'];
+    $rotaC          = $row['rota'];
     $hora           = $row['hora'];
     $rota           = $row['id_rota'];
     $valorRota      = $row['valor'];
+    $horasMesTotal  = sumHourOfMonth($id_colaborador);
 
     echo '
     <tr style="font-size: 12px">
@@ -124,6 +148,7 @@ function showCollaborator()
       <td>
         <input id="' . $id_colaborador . '" class="form-control input-number horas" type="number" value="0" onchange="teste()">
         <input class="valorHora" type="hidden" value=' . $hora . '>
+        <input class="horasMesTotal" type="hidden" value=' . $horasMesTotal . '>
       </td>
     </tr>';
   }
@@ -264,37 +289,40 @@ if (isset($_POST['delete'])) {
   <div class="setores">
     <div class="alert alert-info" role="alert">
       Informe Transporte, Alimentação e Horas Extras para cada colaborador.
+      <hr>
+      Clique no nome da coluna para selecionar os correpondentes da linha.
     </div>
+  </div>
 
-    <table class="table table-striped tabela">
-      <thead>
-        <tr>
-          <th scope="col"></th>
-          <th scope="col">Nome</th>
-          <th scope="col">Rota</th>
-          <th scope="col">Transp.</th>
-          <th scope="col">Aliment.</th>
-          <th scope="col">H. Extras</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php echo showCollaborator(); ?>
-      </tbody>
-    </table>
-    <div class="valor">
-      <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-          <h3>Valor total </h3>
-          <h3><span class="badge badge-primary" id="valorTela">R$ 0,00</span></h3>
-        </li>
-      </ul>
-    </div>
-    <div class="button">
-      <button name="createReserve" id="nextBtn" type="button" class="btn btn-primary" disabled data-toggle="modal" data-target="#modalExemplo">Criar Reserva</button>
-      <form method="post">
-        <button name="delete" type="submit" class="btn btn-danger">Cancelar Reserva</button>
-      </form>
-    </div>
+  <table class="table table-striped tabela">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Nome</th>
+        <th scope="col">Rota</th>
+        <th scope="col" onclick="selectTransport()">Transp.</th>
+        <th scope="col" onclick="selectFood()">Aliment.</th>
+        <th scope="col">H. Extras</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php echo showCollaborator(); ?>
+    </tbody>
+  </table>
+  <div class="valor">
+    <ul class="list-group">
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <h3>Valor total </h3>
+        <h3><span class="badge badge-primary" id="valorTela">R$ 0,00</span></h3>
+      </li>
+    </ul>
+  </div>
+  <div class="button">
+    <button name="createReserve" id="nextBtn" type="button" class="btn btn-primary" disabled data-toggle="modal" data-target="#modalExemplo">Criar Reserva</button>
+    <form method="post">
+      <button name="delete" type="submit" class="btn btn-danger">Cancelar Reserva</button>
+    </form>
+  </div>
   </div>
 
   <!-- Modal -->
@@ -333,7 +361,7 @@ if (isset($_POST['delete'])) {
                     R$ 0,00
                   </span>
                 </h4>
-              </li>              
+              </li>
             </ul>
           </div>
           <div class="modal-footer">
